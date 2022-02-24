@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.team07.online_shopping_mall.mapper.ShopMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.team07.online_shopping_mall.model.domain.Shop">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="user_id" property="userId" />
+        <result column="intro" property="intro" />
+        <result column="address" property="address" />
+        <result column="phone" property="phone" />
+        <result column="catalog_id" property="catalogId" />
+        <result column="image" property="image" />
+        <result column="score" property="score" />
+        <result column="offline" property="offline" />
+    </resultMap>
+
+</mapper>
