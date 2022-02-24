@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.example.mybatisplus.common.JsonResponse;
+import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.service.OrderItemService;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
 
