@@ -1,4 +1,4 @@
-# team07_online_shopping_mall
+# online_shopping_mall
 
 #### 介绍
 实训小组项目：网上购物商城
