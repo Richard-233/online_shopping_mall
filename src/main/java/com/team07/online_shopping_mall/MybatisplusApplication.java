@@ -4,8 +4,11 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author team07
+ */
 @SpringBootApplication
-@MapperScan({"com.example.mybatisplus.mapper"})
+@MapperScan({"com.team07.online_shopping_mall.mapper"})
 public class MybatisplusApplication {
 
     public static void main(String[] args) {
