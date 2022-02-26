@@ -5,16 +5,134 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.team07.online_shopping_mall.model.domain.User">
         <id column="id" property="id" />
-        <result column="username" property="username" />
-        <result column="password" property="password" />
-        <result column="nickname" property="nickname" />
-        <result column="image" property="image" />
-        <result column="role" property="role" />
-        <result column="membership_level" property="membershipLevel" />
-        <result column="integral" property="integral" />
-        <result column="balance" property="balance" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="image" property="image"/>
+        <result column="role" property="role"/>
+        <result column="membership_level" property="membershipLevel"/>
+        <result column="integral" property="integral"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , username, `password`, nickname, image, `role`, membership_level, integral,
+    create_time, update_time
+    </sql>
+
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_user where username = #{userName,jdbcTypeName=VARCHAR}
+    </select>
+
+    <select id="selectLogin" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_user where username = #{userName,jdbcTypeName=VARCHAR} and password = #{password,jdbcTypeName=VARCHAR}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.team07.online_shopping_mall.model.domain.User">
+        insert into mall_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="nickname != null">
+                nickname,
+            </if>
+            <if test="image != null">
+                image,
+            </if>
+            <if test="role != null">
+                `role`,
+            </if>
+            <if test="membershipLevel != null">
+                membership_level,
+            </if>
+            <if test="integral != null">
+                integral,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="image != null">
+                #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=INTEGER},
+            </if>
+            <if test="membershipLevel != null">
+                #{membershipLevel,jdbcType=INTEGER},
+            </if>
+            <if test="integral != null">
+                #{integral,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.team07.online_shopping_mall.model.domain.User">
+        update mall_user
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="image != null">
+                image = #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                `role` = #{role,jdbcType=INTEGER},
+            </if>
+            <if test="membershipLevel != null">
+                membership_level = #{membershipLevel,jdbcType=INTEGER},
+            </if>
+            <if test="integral != null">
+                integral = #{integral,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>
