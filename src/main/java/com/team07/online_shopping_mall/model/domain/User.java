@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author team07
@@ -54,9 +54,6 @@ public class User extends Model<User> {
 
             @ApiModelProperty(value = "积分")
     private Long integral;
-
-            @ApiModelProperty(value = "账户余额")
-    private Long balance;
 
     private LocalDateTime createTime;
 

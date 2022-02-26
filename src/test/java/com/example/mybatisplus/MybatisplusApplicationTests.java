@@ -1,7 +1,7 @@
 package com.example.mybatisplus;
 
-import com.example.mybatisplus.model.domain.Admin;
-import com.example.mybatisplus.service.AdminService;
+import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MybatisplusApplicationTests {
 
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
     @Test
     void contextLoads() {
-        Admin byId = adminService.getById(1);
+        User byId = userService.getById(1);
         System.out.println(byId);
     }
 
