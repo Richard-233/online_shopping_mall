@@ -4,13 +4,73 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.team07.online_shopping_mall.model.domain.Catalog">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="type" property="type" />
-        <result column="parent_id" property="parentId" />
-        <result column="order_num" property="orderNum" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , `name`, `type`, parent_id, order_num,create_time,update_time
+    </sql>
 
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_catalog
+        where name=#{name,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.team07.online_shopping_mall.model.domain.Catalog">
+        insert into mall_catalog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="orderNum != null">
+                order_num,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="orderNum != null">
+                #{orderNum,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
 </mapper>

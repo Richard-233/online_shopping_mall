@@ -1,5 +1,6 @@
 package com.team07.online_shopping_mall.model.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -17,7 +18,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author team07
- * @since 2022-02-24
+ * @since 2022-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,18 +28,18 @@ import lombok.experimental.Accessors;
 public class Cart extends Model<Cart> {
 
     private static final long serialVersionUID = 1L;
+            @ApiModelProperty(value = "主键")
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
             @ApiModelProperty(value = "用户id")
-    @TableId("id")
-    private Long id;
+    private Long userId;
 
             @ApiModelProperty(value = "商品id")
     private Long productId;
 
             @ApiModelProperty(value = "商品数量")
     private Integer quantity;
-
-    private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
 

@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author team07
@@ -29,6 +29,7 @@ public class UserAddress extends Model<UserAddress> {
 
     private static final long serialVersionUID = 1L;
 
+            @ApiModelProperty(value = "主键")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 

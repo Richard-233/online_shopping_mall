@@ -6,6 +6,8 @@ import com.team07.online_shopping_mall.MybatisplusApplication;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
 import com.team07.online_shopping_mall.model.domain.Product;
 import com.team07.online_shopping_mall.service.ProductService;
+import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +42,11 @@ class MybatisplusApplicationTests {
 
         List<Product> lists=productMapper.getByName("茅台");
         System.out.println(lists);
+    private UserService userService;
+    @Test
+    void contextLoads() {
+        User byId = userService.getById(1);
+        System.out.println(byId);
     }
 
 }

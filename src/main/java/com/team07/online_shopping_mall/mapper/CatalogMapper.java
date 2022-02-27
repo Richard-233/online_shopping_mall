@@ -2,7 +2,6 @@ package com.team07.online_shopping_mall.mapper;
 
 import com.team07.online_shopping_mall.model.domain.Catalog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,5 +14,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CatalogMapper extends BaseMapper<Catalog> {
+    Catalog selectByName(String name);
+
+    int insertSelective(Catalog record);
 
 }

@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author team07
- * @since 2022-02-24
+ * @since 2022-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -33,9 +33,6 @@ public class Order extends Model<Order> {
             @ApiModelProperty(value = "主键id")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-
-            @ApiModelProperty(value = "订单号（非主键id）")
-    private String orderNo;
 
             @ApiModelProperty(value = "用户id")
     private Long userId;

@@ -189,7 +189,7 @@ public class CodeGenerator {
 //        strategy.setInclude("mall_cart");
 //        strategy.setInclude("mall_catalog");
 //        strategy.setInclude("mall_order");
-//        strategy.setInclude("mall_order_item");
+        strategy.setInclude("mall_order_item");
 //        strategy.setInclude("mall_product");
 //        strategy.setInclude("mall_shop");
 //        strategy.setInclude("mall_user");
