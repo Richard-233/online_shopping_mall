@@ -2,6 +2,7 @@ package com.team07.online_shopping_mall.service;
 
 import com.team07.online_shopping_mall.model.domain.Catalog;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.team07.online_shopping_mall.model.request.AddCategoryReq;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CatalogService extends IService<Catalog> {
 
+    void add(AddCategoryReq addCategoryReq);
 }
