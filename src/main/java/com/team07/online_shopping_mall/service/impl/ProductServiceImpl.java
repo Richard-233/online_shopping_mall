@@ -25,10 +25,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Autowired
     ProductMapper productMapper;
 
-    public boolean identifyUser(User user, Long shopId){
+    public boolean identifyUser(Long userId, Long shopId){
         List<Long> list=new ArrayList<>();
         list.add(shopId);
-        list.add(productMapper.getShopIdByUserId(user.getId()));
+        list.add(productMapper.getShopIdByUserId(userId));
         if(list.get(0).equals(list.get(1)))
         return true;
         else return false;
