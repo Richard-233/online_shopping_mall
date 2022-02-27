@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Repository
 public interface ProductService extends IService<Product> {
-    boolean identifyUser(User user, Long shopId);
+    boolean identifyUser(Long userId, Long shopId);
 
     //List<Product> getByName(String name);
 }

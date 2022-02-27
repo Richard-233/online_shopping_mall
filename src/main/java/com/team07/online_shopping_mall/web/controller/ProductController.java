@@ -57,13 +57,14 @@ public class ProductController {
     * 描述：根据Id删除
     *
     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
     @ResponseBody
-    public JsonResponse deleteById(@RequestParam("user") User user, @RequestParam("id") Long id) throws Exception {
-        if(productService.identifyUser(user,productService.getById(id).getShopId())){
+    public JsonResponse deleteById(@RequestParam("userid") Long userId, @RequestParam("id") Long id) throws Exception {
+        if(productService.identifyUser(userId,productService.getById(id).getShopId())){
             productService.removeById(id);
+            return JsonResponse.success("删除成功");
         }
-        return JsonResponse.success(null);
+        return JsonResponse.failure("删除失败");
     }
 
 
@@ -73,16 +74,17 @@ public class ProductController {
     */
     @RequestMapping(value = "", method = RequestMethod.PUT)
     @ResponseBody
-    public JsonResponse updateProduct(@RequestParam("user") User user, @RequestParam("product") Product  product) throws Exception {
+    public JsonResponse updateProduct(@RequestBody Product  product,@RequestParam("userid") Long userId) throws Exception {
 //        User user1 =userService.getById(3);
 //        Product product1=productService.getById(2);
 //        product1.setDetail("非常好喝1");
         //product1.setId();
-        if(productService.identifyUser(user,product.getShopId())){
+        if(productService.identifyUser(userId,product.getShopId())){
             productService.updateById(product);
             //System.out.println(1);
+            return JsonResponse.success("更新成功");
         }
-        return JsonResponse.success(null);
+        return JsonResponse.failure("更新失败");
     }
 
 
@@ -109,11 +111,11 @@ public class ProductController {
     */
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse create(Product  product) throws Exception {
+    public JsonResponse create(@RequestBody  Product  product) throws Exception {
 //        Product product2=new Product();
 //        product2=productService.getById(2L);
         productService.save(product);
-        return JsonResponse.success(null);
+        return JsonResponse.success(productService.getById(product.getId()));
     }
 }
 
