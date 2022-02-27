@@ -2,9 +2,14 @@ package com.team07.online_shopping_mall.service.impl;
 
 import com.team07.online_shopping_mall.model.domain.Product;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
+import com.team07.online_shopping_mall.model.domain.User;
 import com.team07.online_shopping_mall.service.ProductService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 /**
  * <p>
@@ -16,5 +21,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
+
+    @Autowired
+    ProductMapper productMapper;
+
+    public boolean identifyUser(User user, Long shopId){
+        List<Long> list=new ArrayList<>();
+        list.add(shopId);
+        list.add(productMapper.getShopIdByUserId(user.getId()));
+        if(list.get(0).equals(list.get(1)))
+        return true;
+        else return false;
+    }
 
 }
