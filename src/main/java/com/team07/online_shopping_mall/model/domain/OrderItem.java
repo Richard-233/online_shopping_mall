@@ -1,5 +1,6 @@
 package com.team07.online_shopping_mall.model.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -13,7 +14,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author team07
@@ -28,8 +29,8 @@ public class OrderItem extends Model<OrderItem> {
 
     private static final long serialVersionUID = 1L;
 
-            @ApiModelProperty(value = "主键id")
-    @TableId("id")
+            @ApiModelProperty(value = "主键")
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
             @ApiModelProperty(value = "归属订单id")

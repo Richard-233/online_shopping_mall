@@ -1,5 +1,6 @@
 package com.team07.online_shopping_mall.model.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -12,7 +13,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author team07
@@ -27,8 +28,8 @@ public class Shop extends Model<Shop> {
 
     private static final long serialVersionUID = 1L;
 
-            @ApiModelProperty(value = "店铺id")
-    @TableId("id")
+            @ApiModelProperty(value = "主键")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
             @ApiModelProperty(value = "店铺名称")
