@@ -147,8 +147,10 @@ public class Product extends Model<Product> {
             @ApiModelProperty(value = "库存数量")
     private Integer stock;
 
+            //0是下架  1是上架  2是推荐
             @ApiModelProperty(value = "商品上架状态")
     private Integer status;
+
 
             @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;

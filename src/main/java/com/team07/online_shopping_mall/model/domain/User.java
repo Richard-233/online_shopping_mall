@@ -46,7 +46,7 @@ public class User extends Model<User> {
             @ApiModelProperty(value = "头像")
     private String image;
 
-            @ApiModelProperty(value = "0-买家 -1-卖家")
+            @ApiModelProperty(value = "0-买家 -1-卖家  2管理员")
     private Integer role;
 
             @ApiModelProperty(value = "会员等级")
