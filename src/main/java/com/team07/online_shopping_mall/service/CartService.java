@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CartService extends IService<Cart> {
 
+
+    boolean addCartProduct(Cart cart);
+
+    boolean subCartProduct(Cart cart);
+
+    boolean delCartProduct(Cart cart);
 }

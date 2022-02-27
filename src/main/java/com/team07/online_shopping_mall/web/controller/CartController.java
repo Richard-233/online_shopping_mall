@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import com.team07.online_shopping_mall.service.CartService;
 import com.team07.online_shopping_mall.model.domain.Cart;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -83,8 +82,9 @@ public class CartController {
 
     /**
      * 描述:从店铺添加商品至购物车,若购物车存在该商品则更新数量，若不存在则添加至购物车
-     * 参数：Cart cart
+     * 参数：Cart cart(含productId,quantity,userId)
      * @Author: xy
+     * @Return: 成功/失败信息
      */
     @RequestMapping("/addToCart")
     @ResponseBody
@@ -110,5 +110,43 @@ public class CartController {
             return ApiRestReasponse.error(MallExceptionEnum.INSERT_FAILED);
         }
     }
+
+    /**
+     * 描述:在购物车中增加商品数量
+     * 参数：Cart cart(含id，productId,quantity)
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping("/addCartProducts")
+    @ResponseBody
+    public ApiRestReasponse addCartProducts(@RequestBody Cart cart) throws Exception{
+        if(cartService.addCartProduct(cart)){
+            return ApiRestReasponse.success();
+        }
+        else {
+            return ApiRestReasponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    /**
+     * 描述:在购物车中减少商品数量/删除商品
+     * 参数：Cart cart(含id，productId,quantity)
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping("/subCartProducts")
+    @ResponseBody
+    public ApiRestReasponse subCartProducts(@RequestBody Cart cart) throws Exception{
+        System.out.println(cart);
+        if(cartService.subCartProduct(cart)){
+            return ApiRestReasponse.success();
+        }
+        else {
+            return ApiRestReasponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+
+
 }
 
