@@ -3,7 +3,7 @@ package com.team07.online_shopping_mall.exception;
 /**
  * 统一异常
  */
-public class MallException extends Exception {
+public class MallException extends RuntimeException {
     private final Integer code;
     private final String message;
 
