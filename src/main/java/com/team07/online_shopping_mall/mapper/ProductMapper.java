@@ -26,4 +26,6 @@ public interface ProductMapper extends BaseMapper<Product> {
 
 
     Long getShopIdByUserId(Long userId);
+
+    List<Product> getByNameSuper(String name);
 }
