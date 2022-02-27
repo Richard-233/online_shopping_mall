@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://sh-cynosdbmysql-grp-f9kr59fc.sql.tencentcdb.com:20328/online_shopping_mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    url: jdbc:mysql://sh-cynosdbmysql-grp-f9kr59fc.sql.tencentcdb.com:20328/online_shopping_mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
     username: test
     password: Test1234
   mvc:
@@ -15,7 +15,7 @@ server:
   servlet:
     encoding:
       charset: utf-8
-  port: 8888
+  port: 3366
 
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
