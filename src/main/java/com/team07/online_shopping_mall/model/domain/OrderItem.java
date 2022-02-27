@@ -1,9 +1,10 @@
 package com.team07.online_shopping_mall.model.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -14,11 +15,11 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- *
+ * 
  * </p>
  *
  * @author team07
- * @since 2022-02-24
+ * @since 2022-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -29,12 +30,11 @@ public class OrderItem extends Model<OrderItem> {
 
     private static final long serialVersionUID = 1L;
 
-            @ApiModelProperty(value = "主键")
+            @ApiModelProperty(value = "主键id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
-            @ApiModelProperty(value = "归属订单id")
-    private String orderNo;
+    private Long orderId;
 
             @ApiModelProperty(value = "商品id")
     private Long productId;
