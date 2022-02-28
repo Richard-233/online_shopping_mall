@@ -104,18 +104,20 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     }
 
     @Override
-    public void createOrder(Map<Long, List<OrderItem>> orderItemMap, OrderInfoDTO orderInfoDTO){
+    public void createOrder(Map<Long, List<OrderItem>> orderItemMap, List<OrderInfoDTO> orderInfoDTOList){
         // 提取数据
-        String receiverAddress = orderInfoDTO.getReceiverAddress();
-        String receiverName = orderInfoDTO.getReceiverName();
-        String receiverMobile = orderInfoDTO.getReceiverMobile();
-        Integer postage = orderInfoDTO.getPostage();
+        String receiverAddress = orderInfoDTOList.get(0).getReceiverAddress();
+        String receiverName = orderInfoDTOList.get(0).getReceiverName();
+        String receiverMobile = orderInfoDTOList.get(0).getReceiverMobile();
+
+        Map<Long,Integer> postageMap = getPostageMap(orderInfoDTOList);
 
         Set<Long> set = orderItemMap.keySet();
         // 遍历每个店铺的订单项集合
         for(Long key : set){
             List<OrderItem> thisOrderItemList = orderItemMap.get(key);
-            Long userId = orderInfoDTO.getUserId();
+            Long userId = orderInfoDTOList.get(0).getUserId();
+            Integer postage = postageMap.get(key);
             Order thisOrder = new Order().
                     setUserId(userId)
                     .setShopId(key)
@@ -137,6 +139,16 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             }
             orderMapper.updateById(newOrder);
         }
+    }
+
+    private Map<Long, Integer> getPostageMap(List<OrderInfoDTO> orderInfoDTOList){
+        Map<Long, Integer> postageMap = new TreeMap<>();
+        for(OrderInfoDTO orderInfoDTO : orderInfoDTOList){
+            Integer postage = orderInfoDTO.getPostage();
+            Long shopId = productMapper.selectById(orderInfoDTO.getProductId()).getShopId();
+            postageMap.put(shopId,postage);
+        }
+        return postageMap;
     }
 }
 

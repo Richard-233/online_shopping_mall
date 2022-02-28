@@ -28,5 +28,5 @@ public interface CartService extends IService<Cart> {
 
     Map<Long, List<OrderItem>> classifyByShop(List<Cart> cartList);
 
-    void createOrder(Map<Long, List<OrderItem>> orderItemMap, OrderInfoDTO orderInfoDTO);
+    void createOrder(Map<Long, List<OrderItem>> orderItemMap, List<OrderInfoDTO> orderInfoDTOList);
 }

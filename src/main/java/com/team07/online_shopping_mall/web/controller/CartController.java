@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.team07.online_shopping_mall.common.ApiRestReasponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
-import com.team07.online_shopping_mall.model.domain.Order;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
-import com.team07.online_shopping_mall.model.domain.Product;
 import com.team07.online_shopping_mall.model.dto.OrderInfoDTO;
+import com.team07.online_shopping_mall.model.vo.OrderInfoVO;
 import com.team07.online_shopping_mall.service.OrderService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
@@ -93,7 +92,7 @@ public class CartController {
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/addCartProducts")
+    @RequestMapping("/checkCart")
     @ResponseBody
     public ApiRestReasponse checkCart(@RequestParam Long userId) throws Exception{
         QueryWrapper<Cart> wrapper = new QueryWrapper<>();
@@ -175,13 +174,15 @@ public class CartController {
 
     /**
      * 描述:将购物车中选中商品添加至订单
-     * 参数：List<Cart> cartList(含id，userId, productId,quantity)
+     * 参数：OrderInfoVO orderInfoVO(参考OrderInfoDTO全部参数)
      * @Author: xy
      * @Return: 成功/失败信息
      */
     @RequestMapping("/createOrder")
     @ResponseBody
-    public ApiRestReasponse createOrder(@RequestBody List<OrderInfoDTO> orderInfoList) throws Exception{
+    public ApiRestReasponse createOrder(@RequestBody OrderInfoVO orderInfoVO) throws Exception{
+        List<OrderInfoDTO> orderInfoList = orderInfoVO.getOrderInfoList();
+        System.out.println(orderInfoList);
         List<Cart> cartList =new ArrayList<>();
         for(OrderInfoDTO orderInfoDTO:orderInfoList){
             Cart cart = new Cart().setId(orderInfoDTO.getCartId())
@@ -191,14 +192,22 @@ public class CartController {
         }
         // 按店铺分类为订单项
         Map<Long,List<OrderItem>> orderItemMap = cartService.classifyByShop(cartList);
+
         // 生成订单与订单项
-        cartService.createOrder(orderItemMap,orderInfoList.get(0));
+        cartService.createOrder(orderItemMap,orderInfoList);
         // 从购物车中移除
         for(Cart cart : cartList){
             cartService.removeById(cart.getId());
         }
         return ApiRestReasponse.success();
     }
-
+//
+//    @RequestMapping("/test")
+//    @ResponseBody
+//    public ApiRestReasponse test(@RequestBody OrderInfoVO query) throws Exception{
+//        List<OrderInfoDTO> orderInfoList = query.getOrderInfoList();
+//        System.out.println(orderInfoList);
+//        return ApiRestReasponse.success();
+//    }
 }
 

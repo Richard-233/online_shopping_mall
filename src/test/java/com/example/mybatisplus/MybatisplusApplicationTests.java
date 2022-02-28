@@ -37,16 +37,11 @@ class MybatisplusApplicationTests {
         System.out.println(productService.getById(1));
     }
 
-//    @Test
-//    public void selectByName(){
-//
-//        List<Product> lists=productMapper.getByName("茅台");
-//        System.out.println(lists);
-//    private UserService userService;
-//    @Test
-//    void contextLoads() {
-//        User byId = userService.getById(1);
-//        System.out.println(byId);
-//    }
+    @Test
+    public void selectByName() {
+
+        List<Product> lists = productMapper.getByName("茅台");
+        System.out.println(lists);
+    }
 
 }
