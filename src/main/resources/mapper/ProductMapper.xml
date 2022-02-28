@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.team07.online_shopping_mall.model.domain.Product">
         <id column="id" property="id" />
         <result column="name" property="name" />
+        <result column="shop_id" property="shopId" />
         <result column="image" property="image" />
         <result column="detail" property="detail" />
         <result column="catalog_id" property="catalogId" />
@@ -16,7 +17,7 @@
         <result column="update_time" property="updateTime" />
     </resultMap>
     <select id="getByName" resultMap="BaseResultMap">
-    select * from mall_product where name like "%#{name}%"
+    select * from mall_product where name like concat('%',#{name},'%')
     </select>
 <!--    <select id="identifyUser" resultMap="BaseResultMap">-->
 <!--select distinct #{product.shopId}, mall_shop.id from mall_shop,mall_user,mall_product where  #{user.id}=mall_shop.userId-->
