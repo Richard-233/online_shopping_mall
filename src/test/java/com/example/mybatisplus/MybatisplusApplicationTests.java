@@ -38,15 +38,10 @@ class MybatisplusApplicationTests {
     }
 
     @Test
-    public void selectByName(){
+    public void selectByName() {
 
-        List<Product> lists=productMapper.getByName("茅台");
+        List<Product> lists = productMapper.getByName("茅台");
         System.out.println(lists);
-    private UserService userService;
-    @Test
-    void contextLoads() {
-        User byId = userService.getById(1);
-        System.out.println(byId);
     }
 
 }

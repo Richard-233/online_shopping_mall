@@ -1,6 +1,8 @@
 package com.team07.online_shopping_mall.model.dto;
 
+import lombok.Data;
 
+@Data
 public class OrderInfoDTO {
     private Long cartId;
 
