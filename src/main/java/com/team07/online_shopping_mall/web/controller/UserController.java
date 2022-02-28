@@ -85,7 +85,7 @@ public class UserController {
     }
 
     /**
-     * 更新用户信息接口
+     *
      *
      * @param userNickname
      * @param userImage
@@ -148,6 +148,36 @@ public class UserController {
             return ApiRestReasponse.success(user);
         } else {
             return ApiRestReasponse.error(MallExceptionEnum.NEED_OPEN_SHOP);
+        }
+    }
+
+    /**
+     * 管理员登录接口
+     *
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     * @throws MallException
+     */
+    @PostMapping("/adminLogin")
+    @ResponseBody
+    public ApiRestReasponse adminLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
+        if (StringUtils.isEmpty(userName)) {
+            return ApiRestReasponse.error(MallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isEmpty(password)) {
+            return ApiRestReasponse.error(MallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName, password);
+        //校验是否是卖家
+        if (userService.checkAdminRole(user)) {
+            //保存用户信息除了密码
+            user.setPassword(null);
+            session.setAttribute(Constant.MALL_USER, user);
+            return ApiRestReasponse.success(user);
+        } else {
+            return ApiRestReasponse.error(MallExceptionEnum.NEED_ADMIN);
         }
     }
 
