@@ -1,14 +1,12 @@
 package com.team07.online_shopping_mall.service.impl;
 
-import com.team07.online_shopping_mall.exception.MallException;
-import com.team07.online_shopping_mall.exception.MallExceptionEnum;
-import com.team07.online_shopping_mall.mapper.UserMapper;
-import com.team07.online_shopping_mall.model.domain.User;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.team07.online_shopping_mall.model.domain.UserAddress;
 import com.team07.online_shopping_mall.mapper.UserAddressMapper;
 import com.team07.online_shopping_mall.service.UserAddressService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,5 +19,20 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddress> implements UserAddressService {
+    @Autowired
+    private UserAddressMapper userAddressMapper;
+    @Autowired
+    private UserAddressService userAddressService;
 
+    public void updateAddress(UserAddress userAddress,String address){
+        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
+        userAddressUpdateWrapper.eq("receiver_address", address);
+        userAddressMapper.update(userAddress,userAddressUpdateWrapper);
+    }
+    public boolean setAddress(String address, int status){
+        UserAddress userAddress = new UserAddress();
+        userAddress.setStatus(status);
+        userAddressService.updateAddress(userAddress,address);
+        return true;
+    }
 }
