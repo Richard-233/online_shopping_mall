@@ -34,7 +34,7 @@ public class AdminFilter implements Filter {
             PrintWriter out = new HttpServletResponseWrapper((HttpServletResponse) servletResponse).getWriter();
             out.write("{\n" +
                     "    \"status\": 10007,\n" +
-                    "    \"msg\": \"用户名未登录\",\n" +
+                    "    \"msg\": \"用户未登录\",\n" +
                     "    \"data\": null\n" +
                     "}");
             out.flush();
