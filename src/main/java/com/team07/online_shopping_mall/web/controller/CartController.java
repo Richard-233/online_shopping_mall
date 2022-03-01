@@ -40,53 +40,6 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    private OrderService orderService;
-
-    /**
-    * 描述：根据Id 查询
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id)throws Exception {
-        Cart  cart =  cartService.getById(id);
-        return JsonResponse.success(cart);
-    }
-
-    /**
-    * 描述：根据Id删除
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public JsonResponse deleteById(@PathVariable("id") Long id) throws Exception {
-        cartService.removeById(id);
-        return JsonResponse.success(null);
-    }
-
-
-    /**
-    * 描述：根据Id 更新
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
-    @ResponseBody
-    public JsonResponse updateCart(Cart  cart) throws Exception {
-        cartService.updateById(cart);
-        return JsonResponse.success(null);
-    }
-
-
-    /**
-    * 描述:创建Cart
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponse create(Cart  cart) throws Exception {
-        cartService.save(cart);
-        return JsonResponse.success(null);
-    }
 
     /**
      * 描述: 获取购物车商品
@@ -94,7 +47,7 @@ public class CartController {
      * @Author: xy
      * @Return: cartVO
      */
-    @RequestMapping("/searchCart")
+    @RequestMapping(value = "/searchCart", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestReasponse searchCart(@RequestParam Long userId) throws Exception{
         CartVO cartVO = cartService.searchCart(userId);
@@ -107,7 +60,7 @@ public class CartController {
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/addToCart")
+    @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestReasponse addToCart(@RequestBody Cart cart) throws Exception{
         QueryWrapper<Cart> wrapper = new QueryWrapper<>();
@@ -138,7 +91,8 @@ public class CartController {
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/addCartProducts")
+
+    @RequestMapping(value = "/addCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestReasponse addCartProducts(@RequestBody Cart cart) throws Exception{
         if(cartService.addCartProduct(cart)){
@@ -155,7 +109,7 @@ public class CartController {
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/subCartProducts")
+    @RequestMapping(value = "/subCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestReasponse subCartProducts(@RequestBody Cart cart) throws Exception{
         System.out.println(cart);
@@ -173,7 +127,7 @@ public class CartController {
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/createOrder")
+    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestReasponse createOrder(@RequestBody OrderInfoVO orderInfoVO) throws Exception{
         List<OrderInfoDTO> orderInfoList = orderInfoVO.getOrderInfoList();

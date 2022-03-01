@@ -1,5 +1,6 @@
 package com.team07.online_shopping_mall.web.controller;
 
+import com.team07.online_shopping_mall.common.ApiRestReasponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
@@ -73,6 +74,17 @@ public class OrderController {
     public JsonResponse create(Order  order) throws Exception {
         orderService.save(order);
         return JsonResponse.success(null);
+    }
+
+    /**
+     * 描述:创建Order
+     *
+     */
+    @RequestMapping(value = "/searchAllOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestReasponse searchAllOrder(@RequestParam Long userId) throws Exception {
+
+        return ApiRestReasponse.success();
     }
 }
 
