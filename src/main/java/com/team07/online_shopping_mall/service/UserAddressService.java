@@ -1,5 +1,7 @@
 package com.team07.online_shopping_mall.service;
 
+import com.team07.online_shopping_mall.exception.MallException;
+import com.team07.online_shopping_mall.model.domain.User;
 import com.team07.online_shopping_mall.model.domain.UserAddress;
 import com.baomidou.mybatisplus.extension.service.IService;
 

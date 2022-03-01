@@ -9,6 +9,28 @@
         <result column="user_id" property="userId" />
         <result column="receiver_name" property="receiverName" />
         <result column="receiver_mobile" property="receiverMobile" />
+        <result column="status" property="status" />
     </resultMap>
+    <update id="updateByPrimaryKeySelective">
+        update mall_user_address
+        <set>
+            <if test="receiver_address != null">
+                receiver_address = #{receiver_address,jdbcType=VARCHAR},
+            </if>
+            <if test="user_id != null">
+                user_id = #{user_id,jdbcType=BIGINT},
+            </if>
+            <if test="receiver_name != null">
+                receiver_name = #{receiver_name,jdbcType=VARCHAR},
+            </if>
+            <if test="receiver_mobile != null">
+                receiver_mobile = #{receiver_mobile,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>
