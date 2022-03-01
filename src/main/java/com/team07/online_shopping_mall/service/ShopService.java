@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ShopService extends IService<Shop> {
 
+    boolean identifyUser(Long id, Long userId);
 }
