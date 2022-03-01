@@ -1,12 +1,8 @@
 package com.team07.online_shopping_mall.filter;
 
-import com.team07.online_shopping_mall.common.ApiRestReasponse;
 import com.team07.online_shopping_mall.common.Constant;
-import com.team07.online_shopping_mall.exception.MallExceptionEnum;
-import com.team07.online_shopping_mall.model.domain.Catalog;
 import com.team07.online_shopping_mall.model.domain.User;
 import com.team07.online_shopping_mall.service.UserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.*;
@@ -46,7 +42,7 @@ public class AdminFilter implements Filter {
             return;
         }
         //校验是否是管理员
-        boolean adminRole = userService.checkAdminRole(currentUser) || userService.checkRole(currentUser);
+        boolean adminRole = userService.checkAdminRole(currentUser);
         if (adminRole) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
