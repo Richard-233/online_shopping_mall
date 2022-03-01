@@ -41,6 +41,8 @@ public class UserAddress extends Model<UserAddress> {
 
     private String receiverMobile;
 
+    private Integer status;
+
 
     @Override
     protected Serializable pkVal() {
