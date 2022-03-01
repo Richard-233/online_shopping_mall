@@ -18,6 +18,8 @@ public enum MallExceptionEnum {
     REQUEST_PARAM_ERROR(10012, "参数错误"),
     DELETE_FAILED(10013, "删除失败"),
     NEED_OPEN_SHOP(10014, "该用户未注册店铺"),
+    MKDIR_FAILED(10015, "创建文件夹失败"),
+    UPLOAD_FAILED(10016, "图片上传失败"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码
