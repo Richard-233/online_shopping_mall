@@ -1,7 +1,7 @@
 package com.team07.online_shopping_mall.web.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.team07.online_shopping_mall.common.ApiRestReasponse;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.User;
@@ -55,19 +55,19 @@ public class CatalogController {
      */
     @PostMapping("/admin/add")
     @ResponseBody
-    public ApiRestReasponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) {
+    public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_LOGIN);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
         //校验是否是管理员
-        boolean AdminRole = userService.checkRole(currentUser);
+        boolean AdminRole = userService.checkAdminRole(currentUser);
         if (AdminRole) {
             //是管理员执行操作
             catalogService.add(addCategoryReq);
-            return ApiRestReasponse.success();
+            return ApiRestResponse.success();
         } else {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_ADMIN);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
         }
     }
 
@@ -80,21 +80,21 @@ public class CatalogController {
      */
     @PostMapping("/admin/update")
     @ResponseBody
-    public ApiRestReasponse updateCategory(HttpSession session, @Valid @RequestBody UpdateCategoryReq updateCategoryReq) {
+    public ApiRestResponse updateCategory(HttpSession session, @Valid @RequestBody UpdateCategoryReq updateCategoryReq) {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_LOGIN);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
         //校验是否是管理员
-        boolean AdminRole = userService.checkRole(currentUser);
+        boolean AdminRole = userService.checkAdminRole(currentUser);
         if (AdminRole) {
             //是管理员执行操作
             Catalog catalog = new Catalog();
             BeanUtils.copyProperties(updateCategoryReq, catalog);
             catalogService.update(catalog);
-            return ApiRestReasponse.success();
+            return ApiRestResponse.success();
         } else {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_ADMIN);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
         }
     }
 
@@ -105,23 +105,23 @@ public class CatalogController {
      */
     @PostMapping("/admin/delete")
     @ResponseBody
-    public ApiRestReasponse deleteCategory(@RequestParam Long id) {
+    public ApiRestResponse deleteCategory(@RequestParam Long id) {
         catalogService.delete(id);
-        return ApiRestReasponse.success();
+        return ApiRestResponse.success();
     }
 
     @PostMapping("/admin/list")
     @ResponseBody
-    public ApiRestReasponse listCategoryForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         PageInfo pageInfo = catalogService.listForAdmin(pageNum, pageSize);
-        return ApiRestReasponse.success(pageInfo);
+        return ApiRestResponse.success(pageInfo);
     }
 
     @PostMapping("/custom/list")
     @ResponseBody
-    public ApiRestReasponse listCategoryForCustom() {
+    public ApiRestResponse listCategoryForCustom() {
         List<CatalogVO> catalogVOS = catalogService.listCategoryForCustom();
-        return ApiRestReasponse.success(catalogVOS);
+        return ApiRestResponse.success(catalogVOS);
     }
 
 
