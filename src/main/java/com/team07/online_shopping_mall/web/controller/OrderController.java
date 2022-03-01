@@ -2,6 +2,7 @@ package com.team07.online_shopping_mall.web.controller;
 
 import com.team07.online_shopping_mall.common.ApiRestReasponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
+import com.team07.online_shopping_mall.model.vo.OrderVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -77,14 +78,25 @@ public class OrderController {
     }
 
     /**
-     * 描述:创建Order
-     *
+     * 描述:查找用户所有订单
+     * @Author: xy
      */
-    @RequestMapping(value = "/searchAllOrder", method = RequestMethod.POST)
+    @RequestMapping(value = "/searchUserAllOrder", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestReasponse searchAllOrder(@RequestParam Long userId) throws Exception {
+    public ApiRestReasponse searchUserAllOrder(@RequestParam Long userId) throws Exception {
+        OrderVO orderVO = orderService.searchAllByUserId(userId);
+        return ApiRestReasponse.success(orderVO);
+    }
 
-        return ApiRestReasponse.success();
+    /**
+     * 描述:根据status查找用户订单
+     * @Author: xy
+     */
+    @RequestMapping(value = "/searchUserOrderByStatus", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestReasponse searchUserOrderByStatus(@RequestParam Long userId, @RequestParam Integer status) throws Exception {
+        OrderVO orderVO = orderService.searchUserOrderByStatus(userId, status);
+        return ApiRestReasponse.success(orderVO);
     }
 }
 

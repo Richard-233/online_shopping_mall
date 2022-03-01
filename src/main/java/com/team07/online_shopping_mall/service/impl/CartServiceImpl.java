@@ -46,7 +46,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     @Override
     public CartVO searchCart(Long userId){
         List<CartInfoDTO> cartInfoDTOList = cartMapper.searchCart(userId);
-        Map<Long, List<CartInfoDTO>> cartInfoMap = new TreeMap<>();
+        Map<Long, List<CartInfoDTO>> cartInfoMap = new HashMap<>();
         List<CartInfoVO> cartInfoVOList = new ArrayList<>();
         for(CartInfoDTO cartInfoDTO : cartInfoDTOList){
             Long shopId = cartInfoDTO.getShopId();

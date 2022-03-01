@@ -2,6 +2,7 @@ package com.team07.online_shopping_mall.service;
 
 import com.team07.online_shopping_mall.model.domain.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.team07.online_shopping_mall.model.vo.OrderVO;
 
 /**
  * <p>
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface OrderService extends IService<Order> {
 
+    OrderVO searchAllByUserId(Long userId);
+
+    OrderVO searchUserOrderByStatus(Long userId, Integer status);
 }
