@@ -1,16 +1,17 @@
 package com.team07.online_shopping_mall.model.vo;
 
-import com.team07.online_shopping_mall.model.dto.OrderInfoDTO;
+import com.team07.online_shopping_mall.model.dto.CartInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-// 购物车生成订单：后端接收的数据形式
+// 查看购物车：一次封装
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderInfoVO {
-   private   List<OrderInfoDTO> orderInfoList;
+public class CartInfoVO {
+    private Long shopId;
+    private List<CartInfoDTO> shopCartInfoList;
 }

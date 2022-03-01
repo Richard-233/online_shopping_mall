@@ -5,7 +5,9 @@ import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
+import com.team07.online_shopping_mall.model.dto.CartInfoDTO;
 import com.team07.online_shopping_mall.model.dto.OrderInfoDTO;
+import com.team07.online_shopping_mall.model.vo.CartVO;
 import com.team07.online_shopping_mall.model.vo.OrderInfoVO;
 import com.team07.online_shopping_mall.service.OrderService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,82 +40,27 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    private OrderService orderService;
-
-    /**
-    * 描述：根据Id 查询
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id)throws Exception {
-        Cart  cart =  cartService.getById(id);
-        return JsonResponse.success(cart);
-    }
-
-    /**
-    * 描述：根据Id删除
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public JsonResponse deleteById(@PathVariable("id") Long id) throws Exception {
-        cartService.removeById(id);
-        return JsonResponse.success(null);
-    }
-
-
-    /**
-    * 描述：根据Id 更新
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
-    @ResponseBody
-    public JsonResponse updateCart(Cart  cart) throws Exception {
-        cartService.updateById(cart);
-        return JsonResponse.success(null);
-    }
-
-
-    /**
-    * 描述:创建Cart
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponse create(Cart  cart) throws Exception {
-        cartService.save(cart);
-        return JsonResponse.success(null);
-    }
 
     /**
      * 描述: 获取购物车商品
-     * 参数：Cart cart(含id，productId,quantity)
-     *
+     * 参数：Long userId
      * @Author: xy
-     * @Return: 成功/失败信息
+     * @Return: cartVO
      */
-    @RequestMapping("/checkCart")
+    @RequestMapping(value = "/searchCart", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse checkCart(@RequestParam Long userId) throws Exception {
-        QueryWrapper<Cart> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(Cart::getUserId, userId);
-        List<Cart> cartList = cartService.list(wrapper);
-        if (cartList.size() > 0) {
-            return ApiRestResponse.success(cartList);
-        } else {
-            return ApiRestResponse.error(MallExceptionEnum.SYSTEM_ERROR);
-        }
+    public ApiRestResponse searchCart(@RequestParam Long userId) throws Exception{
+        CartVO cartVO = cartService.searchCart(userId);
+        return ApiRestResponse.success(cartVO);
     }
 
     /**
      * 描述:从店铺添加商品至购物车,若购物车存在该商品则更新数量，若不存在则添加至购物车
      * 参数：Cart cart(含productId,quantity,userId)
-     *
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/addToCart")
+    @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse addToCart(@RequestBody Cart cart) throws Exception {
         QueryWrapper<Cart> wrapper = new QueryWrapper<>();
@@ -141,16 +88,17 @@ public class CartController {
     /**
      * 描述:在购物车中增加商品数量
      * 参数：Cart cart(含id，productId,quantity)
-     *
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/addCartProducts")
+
+    @RequestMapping(value = "/addCartProducts", method = RequestMethod.POST)
     @ResponseBody
-    public ApiRestResponse addCartProducts(@RequestBody Cart cart) throws Exception {
-        if (cartService.addCartProduct(cart)) {
+    public ApiRestResponse addCartProducts(@RequestBody Cart cart) throws Exception{
+        if(cartService.addCartProduct(cart)){
             return ApiRestResponse.success();
-        } else {
+        }
+        else {
             return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
         }
     }
@@ -158,11 +106,10 @@ public class CartController {
     /**
      * 描述:在购物车中减少商品数量/删除商品
      * 参数：Cart cart(含id，productId,quantity)
-     *
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/subCartProducts")
+    @RequestMapping(value = "/subCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse subCartProducts(@RequestBody Cart cart) throws Exception {
         System.out.println(cart);
@@ -176,11 +123,10 @@ public class CartController {
     /**
      * 描述:将购物车中选中商品添加至订单
      * 参数：OrderInfoVO orderInfoVO(参考OrderInfoDTO全部参数)
-     *
      * @Author: xy
      * @Return: 成功/失败信息
      */
-    @RequestMapping("/createOrder")
+    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse createOrder(@RequestBody OrderInfoVO orderInfoVO) throws Exception {
         List<OrderInfoDTO> orderInfoList = orderInfoVO.getOrderInfoList();

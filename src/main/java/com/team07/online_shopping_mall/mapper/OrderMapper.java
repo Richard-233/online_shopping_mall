@@ -2,7 +2,11 @@ package com.team07.online_shopping_mall.mapper;
 
 import com.team07.online_shopping_mall.model.domain.Order;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.team07.online_shopping_mall.model.dto.OrderItemDTO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderMapper extends BaseMapper<Order> {
 
+    List<OrderItemDTO> searchAllByUserId(Long userId);
+
+    List<OrderItemDTO> searchUserOrderByStatus(Long userId, Integer status);
 }
