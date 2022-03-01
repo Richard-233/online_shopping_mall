@@ -20,6 +20,8 @@ public enum MallExceptionEnum {
     NEED_OPEN_SHOP(10014, "该用户未注册店铺"),
     MKDIR_FAILED(10015, "创建文件夹失败"),
     UPLOAD_FAILED(10016, "图片上传失败"),
+    SELECT_FAILED(10017, "查询失败或不存在"),
+    ADD_FAILED(10018, "添加失败"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

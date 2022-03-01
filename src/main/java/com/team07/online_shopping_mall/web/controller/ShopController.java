@@ -1,5 +1,13 @@
 package com.team07.online_shopping_mall.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
+import com.team07.online_shopping_mall.common.Constant;
+import com.team07.online_shopping_mall.exception.MallExceptionEnum;
+import com.team07.online_shopping_mall.mapper.ShopMapper;
+import com.team07.online_shopping_mall.model.domain.Product;
+import com.team07.online_shopping_mall.model.domain.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -9,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.service.ShopService;
 import com.team07.online_shopping_mall.model.domain.Shop;
+
+import javax.servlet.http.HttpSession;
+import java.sql.Wrapper;
+import java.util.List;
 
 
 /**
@@ -28,51 +40,224 @@ public class ShopController {
 
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private ShopMapper shopMapper;
 
     /**
-    * 描述：根据Id 查询
-    *
-    */
+     * 描述：普通人根据Id 查询111
+     *
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id)throws Exception {
+    public ApiRestResponse getById(@PathVariable("id") Long id)throws Exception {
         Shop  shop =  shopService.getById(id);
-        return JsonResponse.success(shop);
+        if(shop.getOffline().equals(0))
+        return ApiRestResponse.success(shop);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
 
+
+//8989
     /**
-    * 描述：根据Id删除
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+     * 描述：管理员根据Id 查询111
+     *
+     */
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse deleteById(@PathVariable("id") Long id) throws Exception {
+    public ApiRestResponse getByIdSuper(@PathVariable("id") Long id)throws Exception {
+        Shop  shop =  shopService.getById(id);
+        return ApiRestResponse.success(shop);
+    }
+
+
+    /**
+     * 描述：普通人根据Name 查询111
+     *
+     */
+    @RequestMapping(value = "/name", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getByName(@RequestParam String name)throws Exception {
+        List<Shop> lists=shopMapper.getByName(name);
+        if(lists.size()>0)
+        return ApiRestResponse.success(lists);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+
+    /**
+     * 描述：管理员根据Name 查询111
+     *
+     */
+    @RequestMapping(value = "/admin/name", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getByNameSuper(@RequestParam String name)throws Exception {
+        List<Shop> lists=shopMapper.getByNameSuper(name);
+        if(lists.size()>0)
+            return ApiRestResponse.success(lists);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+
+    /**
+     * 描述：普通人查询所有（按评分从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/selectall", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getAll()throws Exception {
+        QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>().eq("offline",0).orderByDesc("score");
+        List<Shop> shops=shopService.list(wrapper);
+        if(shops.size()>0)
+            return ApiRestResponse.success(shops);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+
+    /**
+     * 描述：管理员查询所有（按评分从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/admin/selectall", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getAllSuper()throws Exception {
+        QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>().orderByDesc("score");
+        List<Shop> shops=shopService.list(wrapper);
+        if(shops.size()>0)
+            return ApiRestResponse.success(shops);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+    /**
+     * 描述：普通人根据商铺类别查询（按评分从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/selectbycatalog", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getByCatalog(@RequestParam Long catalogId)throws Exception {
+        QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>().eq("offline",0).eq("catalog_id",catalogId).orderByDesc("score");
+        List<Shop> shops=shopService.list(wrapper);
+        if(shops.size()>0)
+            return ApiRestResponse.success(shops);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+
+    /**
+     * 描述：管理员根据商铺类别查询（按评分从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/admin/selectbycatalog", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getByCatalogSuper(@RequestParam Long catalogId)throws Exception {
+        QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>().eq("catalog_id",catalogId).orderByDesc("score");
+        List<Shop> shops=shopService.list(wrapper);
+        if(shops.size()>0)
+            return ApiRestResponse.success(shops);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+
+    /**
+     * 描述：普通人根据Id删除（逻辑删除）1111
+     *
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.PUT)
+    @ResponseBody
+    public ApiRestResponse deleteByIdLogic(@RequestParam("id") Long id, HttpSession session) throws Exception {
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if(shopService.identifyUser(currentUser.getId(),shopService.getById(id).getUserId())||currentUser.getRole().equals(2)){
+            Shop shop=shopService.getById(id);
+            shop.setOffline(1);
+            shopService.updateById(shop);
+            return ApiRestResponse.success("删除成功");
+        }
+        return ApiRestResponse.error(MallExceptionEnum.DELETE_FAILED);
+    }
+
+
+
+    /**
+     * 描述：管理员根据Id删除（真实删除）1111
+     *
+     */
+    @RequestMapping(value = "/admin/delete", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ApiRestResponse deleteByIdSuper(@RequestParam("id") Long id) throws Exception {
         shopService.removeById(id);
-        return JsonResponse.success(null);
+        return ApiRestResponse.success("删除成功");
     }
 
 
+
     /**
-    * 描述：根据Id 更新
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+     * 描述：根据Id 更新（如果是管理员，那么就允许更新所有字段；如果是普通人，那么只允许更新部分字段）111
+     *   对于普通人，前端只提供部分字段的接口就是，后端就调这个接口
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     @ResponseBody
-    public JsonResponse updateShop(Shop  shop) throws Exception {
-        shopService.updateById(shop);
-        return JsonResponse.success(null);
+    public ApiRestResponse updateProduct(@RequestBody Shop  shop,HttpSession session) throws Exception {
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+//        System.out.println(currentUser.getId());
+//        System.out.println(shop);
+        if(shopService.identifyUser(currentUser.getId(),shop.getUserId())||currentUser.getRole().equals(2)){
+            shopService.updateById(shop);
+            return ApiRestResponse.success(shop);
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+        //return JsonResponse.failure("wrong");
     }
 
 
+
     /**
-    * 描述:创建Shop
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+     * 描述:所有人创建Shop1111
+     *
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse create(Shop  shop) throws Exception {
+    public ApiRestResponse create(@RequestBody  Shop  shop,HttpSession session) throws Exception {
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if(currentUser.getId().equals(shop.getUserId())||currentUser.getRole().equals(2)){
+            shopService.save(shop);
+        }
+        QueryWrapper<Shop> wrapper= Wrappers.query();
+        wrapper.eq("user_id",shop.getUserId()).eq("offline",0);
+        if(shopService.count(wrapper)==1){
+            return ApiRestResponse.success(shop);
+        }
+        if(shopService.count(wrapper)==2){
+            shopService.removeById(shop.getId());
+            return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
+        }
+        return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
+    }
+
+
+
+    /**
+     * 描述:管理员创建Shop111
+     *
+     */
+    @RequestMapping(value = "/admin/add", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse create(@RequestBody  Shop  shop) throws Exception {
         shopService.save(shop);
-        return JsonResponse.success(null);
+        QueryWrapper<Shop> wrapper= Wrappers.query();
+        wrapper.eq("user_id",shop.getUserId()).eq("offline",0);
+        if(shopService.count(wrapper)==1){
+            return ApiRestResponse.success(shop);
+        }
+        if(shopService.count(wrapper)==2){
+            shopService.removeById(shop.getId());
+            return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
+        }
+        return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
     }
 }
 

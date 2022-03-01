@@ -1,5 +1,6 @@
 package com.team07.online_shopping_mall.service.impl;
 
+import com.team07.online_shopping_mall.mapper.ShopMapper;
 import com.team07.online_shopping_mall.model.domain.Product;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
 import com.team07.online_shopping_mall.model.domain.User;
@@ -24,14 +25,17 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Autowired
     ProductMapper productMapper;
+    @Autowired
+    ShopMapper shopMapper;
 
     public boolean identifyUser(Long userId, Long shopId){
-        List<Long> list=new ArrayList<>();
-        list.add(shopId);
-        list.add(productMapper.getShopIdByUserId(userId));
-        if(list.get(0).equals(list.get(1)))
-        return true;
-        else return false;
+//        List<Long> list=new ArrayList<>();
+//        list.add(shopId);
+//        list.add(productMapper.getShopIdByUserId(userId));
+//        if(list.get(0).equals(list.get(1)))
+//        return true;
+//        else return false;
+        return userId.equals(shopMapper.selectById(shopId).getUserId());
     }
 
 }

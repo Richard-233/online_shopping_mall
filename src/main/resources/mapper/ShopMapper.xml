@@ -15,5 +15,12 @@
         <result column="score" property="score" />
         <result column="offline" property="offline" />
     </resultMap>
+    <select id="getByName" resultMap="BaseResultMap">
+        select * from mall_shop where name like concat('%',#{name},'%') and mall_shop.offline=0
+    </select>
+
+    <select id="getByNameSuper" resultMap="BaseResultMap">
+        select * from mall_shop where name like concat('%',#{name},'%')
+    </select>
 
 </mapper>
