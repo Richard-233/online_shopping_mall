@@ -78,4 +78,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //0-买家 1-卖家
         return user.getRole().equals(1);
     }
+
+    @Override
+    public boolean checkAdminRole(User user) {
+        //0-买家 1-卖家
+        return user.getRole().equals(2);
+    }
 }
