@@ -12,9 +12,16 @@ public enum MallExceptionEnum {
     WRONG_PASSWORD(10006, "用户名或密码错误"),
     NEED_LOGIN(10007, "用户未登录"),
     UPDATE_FAILED(10008, "更新失败"),
-    NEED_OPEN_SHOP(10009, "该账户未注册店铺"),
+    NEED_ADMIN(10009, "该账户不是管理员"),
     PARA_NOT_NULL(10010, "参数不能为空"),
     CREATE_FAILED(10011, "新增失败"),
+    REQUEST_PARAM_ERROR(10012, "参数错误"),
+    DELETE_FAILED(10013, "删除失败"),
+    NEED_OPEN_SHOP(10014, "该用户未注册店铺"),
+    MKDIR_FAILED(10015, "创建文件夹失败"),
+    UPLOAD_FAILED(10016, "图片上传失败"),
+    SELECT_FAILED(10017, "查询失败或不存在"),
+    ADD_FAILED(10018, "添加失败"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

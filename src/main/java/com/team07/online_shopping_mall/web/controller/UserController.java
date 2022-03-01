@@ -1,9 +1,8 @@
 package com.team07.online_shopping_mall.web.controller;
 
-import com.team07.online_shopping_mall.common.ApiRestReasponse;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.common.JsonResponse;
-import com.team07.online_shopping_mall.exception.GlobalExceptionHandler;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.User;
@@ -44,19 +43,19 @@ public class UserController {
      */
     @PostMapping("/register")
     @ResponseBody
-    public ApiRestReasponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws MallException {
+    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws MallException {
         if (StringUtils.isEmpty(userName)) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_USER_NAME);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
         if (StringUtils.isEmpty(password)) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_PASSWORD);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
         //密码长度不能少于8位
         if (password.length() < 8) {
-            return ApiRestReasponse.error(MallExceptionEnum.PASSWORD_TOO_SHORT);
+            return ApiRestResponse.error(MallExceptionEnum.PASSWORD_TOO_SHORT);
         }
         userService.register(userName, password);
-        return ApiRestReasponse.success();
+        return ApiRestResponse.success();
     }
 
     /**
@@ -70,22 +69,22 @@ public class UserController {
      */
     @PostMapping("/login")
     @ResponseBody
-    public ApiRestReasponse login(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
+    public ApiRestResponse login(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
         if (StringUtils.isEmpty(userName)) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_USER_NAME);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
         if (StringUtils.isEmpty(password)) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_PASSWORD);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
         User user = userService.login(userName, password);
         //保存用户信息除了密码
         user.setPassword(null);
         session.setAttribute(Constant.MALL_USER, user);
-        return ApiRestReasponse.success(user);
+        return ApiRestResponse.success(user);
     }
 
     /**
-     * 更新用户信息接口
+     *
      *
      * @param userNickname
      * @param userImage
@@ -95,17 +94,17 @@ public class UserController {
      */
     @PostMapping("/updateInfo")
     @ResponseBody
-    public ApiRestReasponse updataUserInfo(@RequestParam("nickname") String userNickname, @RequestParam("image_url") String userImage, HttpSession session) throws MallException {
+    public ApiRestResponse updataUserInfo(@RequestParam("nickname") String userNickname, @RequestParam("image_url") String userImage, HttpSession session) throws MallException {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_LOGIN);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
         User user = new User();
         user.setId(currentUser.getId());
         user.setNickname(userNickname);
         user.setImage(userImage);
         userService.updateInfo(user);
-        return ApiRestReasponse.success();
+        return ApiRestResponse.success();
     }
 
     /**
@@ -116,9 +115,9 @@ public class UserController {
      */
     @PostMapping("/logout")
     @ResponseBody
-    public ApiRestReasponse logout(HttpSession session) {
+    public ApiRestResponse logout(HttpSession session) {
         session.removeAttribute(Constant.MALL_USER);
-        return ApiRestReasponse.success();
+        return ApiRestResponse.success();
     }
 
     /**
@@ -132,12 +131,12 @@ public class UserController {
      */
     @PostMapping("/sellerLogin")
     @ResponseBody
-    public ApiRestReasponse sellerLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
+    public ApiRestResponse sellerLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
         if (StringUtils.isEmpty(userName)) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_USER_NAME);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
         if (StringUtils.isEmpty(password)) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_PASSWORD);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
         User user = userService.login(userName, password);
         //校验是否是卖家
@@ -145,9 +144,39 @@ public class UserController {
             //保存用户信息除了密码
             user.setPassword(null);
             session.setAttribute(Constant.MALL_USER, user);
-            return ApiRestReasponse.success(user);
+            return ApiRestResponse.success(user);
         } else {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_OPEN_SHOP);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_OPEN_SHOP);
+        }
+    }
+
+    /**
+     * 管理员登录接口
+     *
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     * @throws MallException
+     */
+    @PostMapping("/adminLogin")
+    @ResponseBody
+    public ApiRestResponse adminLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
+        if (StringUtils.isEmpty(userName)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isEmpty(password)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName, password);
+        //校验是否是卖家
+        if (userService.checkAdminRole(user)) {
+            //保存用户信息除了密码
+            user.setPassword(null);
+            session.setAttribute(Constant.MALL_USER, user);
+            return ApiRestResponse.success(user);
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
         }
     }
 
@@ -160,10 +189,10 @@ public class UserController {
      */
     @PostMapping("/updateUserRole")
     @ResponseBody
-    public ApiRestReasponse updateUserRole(HttpSession session) throws MallException {
+    public ApiRestResponse updateUserRole(HttpSession session) throws MallException {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
-            return ApiRestReasponse.error(MallExceptionEnum.NEED_LOGIN);
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
         User user = new User();
         user.setId(currentUser.getId());
@@ -171,7 +200,7 @@ public class UserController {
         user.setImage(currentUser.getImage());
         user.setRole(1);
         userService.updateInfo(user);
-        return ApiRestReasponse.success();
+        return ApiRestResponse.success();
     }
 
 

@@ -4,6 +4,7 @@ import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.mapper.ShopMapper;
 import com.team07.online_shopping_mall.service.ShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +17,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements ShopService {
-
+    @Autowired
+    private ShopMapper shopMapper;
+    public boolean identifyUser(Long id, Long userId){
+        return userId.equals(id);
+    }
 }

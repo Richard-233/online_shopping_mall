@@ -7,20 +7,27 @@ import javax.validation.constraints.Size;
 /**
  * 添加目录的请求类
  */
-public class AddCategoryReq {
+public class UpdateCategoryReq {
+    @NotNull(message = "id不能为null")
+    private Long id;
+
     @Size(min = 2, max = 5)
-    @NotNull(message = "name不能为null")
     private String name;
 
-    @NotNull(message = "type不能为null")
     @Max(3)
     private Integer type;
 
-    @NotNull(message = "parentID不能为null")
     private Long parentId;
 
-    @NotNull(message = "orderNum不能为null")
     private Integer orderNum;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

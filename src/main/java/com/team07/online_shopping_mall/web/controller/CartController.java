@@ -1,7 +1,7 @@
 package com.team07.online_shopping_mall.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.team07.online_shopping_mall.common.ApiRestReasponse;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
@@ -49,9 +49,9 @@ public class CartController {
      */
     @RequestMapping(value = "/searchCart", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestReasponse searchCart(@RequestParam Long userId) throws Exception{
+    public ApiRestResponse searchCart(@RequestParam Long userId) throws Exception{
         CartVO cartVO = cartService.searchCart(userId);
-        return ApiRestReasponse.success(cartVO);
+        return ApiRestResponse.success(cartVO);
     }
 
     /**
@@ -62,26 +62,26 @@ public class CartController {
      */
     @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     @ResponseBody
-    public ApiRestReasponse addToCart(@RequestBody Cart cart) throws Exception{
+    public ApiRestResponse addToCart(@RequestBody Cart cart) throws Exception {
         QueryWrapper<Cart> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(Cart::getUserId,cart.getUserId()).eq(Cart::getProductId,cart.getProductId());
+        wrapper.lambda().eq(Cart::getUserId, cart.getUserId()).eq(Cart::getProductId, cart.getProductId());
         List<Cart> lists = cartService.list(wrapper);
 
-        if(lists.size() == 1){
+        if (lists.size() == 1) {
             Cart currentCart = lists.get(0);
             currentCart.setQuantity(currentCart.getQuantity() + cart.getQuantity());
-            if(cartService.updateById(currentCart)){
-                return ApiRestReasponse.success();
+            if (cartService.updateById(currentCart)) {
+                return ApiRestResponse.success();
             }
             else {
-                return ApiRestReasponse.error(MallExceptionEnum.UPDATE_FAILED);
+                return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
             }
         }
-        else if(cartService.save(cart)){
-            return ApiRestReasponse.success();
+        else if(cartService.save(cart)) {
+            return ApiRestResponse.success();
         }
         else {
-            return ApiRestReasponse.error(MallExceptionEnum.INSERT_FAILED);
+            return ApiRestResponse.error(MallExceptionEnum.INSERT_FAILED);
         }
     }
 
@@ -94,12 +94,12 @@ public class CartController {
 
     @RequestMapping(value = "/addCartProducts", method = RequestMethod.POST)
     @ResponseBody
-    public ApiRestReasponse addCartProducts(@RequestBody Cart cart) throws Exception{
+    public ApiRestResponse addCartProducts(@RequestBody Cart cart) throws Exception{
         if(cartService.addCartProduct(cart)){
-            return ApiRestReasponse.success();
+            return ApiRestResponse.success();
         }
         else {
-            return ApiRestReasponse.error(MallExceptionEnum.UPDATE_FAILED);
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
         }
     }
 
@@ -111,13 +111,12 @@ public class CartController {
      */
     @RequestMapping(value = "/subCartProducts", method = RequestMethod.POST)
     @ResponseBody
-    public ApiRestReasponse subCartProducts(@RequestBody Cart cart) throws Exception{
+    public ApiRestResponse subCartProducts(@RequestBody Cart cart) throws Exception {
         System.out.println(cart);
-        if(cartService.subCartProduct(cart)){
-            return ApiRestReasponse.success();
-        }
-        else {
-            return ApiRestReasponse.error(MallExceptionEnum.UPDATE_FAILED);
+        if (cartService.subCartProduct(cart)) {
+            return ApiRestResponse.success();
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
         }
     }
 
@@ -129,11 +128,11 @@ public class CartController {
      */
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
     @ResponseBody
-    public ApiRestReasponse createOrder(@RequestBody OrderInfoVO orderInfoVO) throws Exception{
+    public ApiRestResponse createOrder(@RequestBody OrderInfoVO orderInfoVO) throws Exception {
         List<OrderInfoDTO> orderInfoList = orderInfoVO.getOrderInfoList();
         System.out.println(orderInfoList);
-        List<Cart> cartList =new ArrayList<>();
-        for(OrderInfoDTO orderInfoDTO:orderInfoList){
+        List<Cart> cartList = new ArrayList<>();
+        for (OrderInfoDTO orderInfoDTO : orderInfoList) {
             Cart cart = new Cart().setId(orderInfoDTO.getCartId())
                     .setProductId(orderInfoDTO.getProductId())
                     .setQuantity(orderInfoDTO.getQuantity());
@@ -148,15 +147,15 @@ public class CartController {
         for(Cart cart : cartList){
             cartService.removeById(cart.getId());
         }
-        return ApiRestReasponse.success();
+        return ApiRestResponse.success();
     }
 //
 //    @RequestMapping("/test")
 //    @ResponseBody
-//    public ApiRestReasponse test(@RequestBody OrderInfoVO query) throws Exception{
+//    public ApiRestResponse test(@RequestBody OrderInfoVO query) throws Exception{
 //        List<OrderInfoDTO> orderInfoList = query.getOrderInfoList();
 //        System.out.println(orderInfoList);
-//        return ApiRestReasponse.success();
+//        return ApiRestResponse.success();
 //    }
 }
 

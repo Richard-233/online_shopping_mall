@@ -22,4 +22,6 @@ public interface UserService extends IService<User> {
     void updateInfo(User user) throws MallException;
 
     boolean checkRole(User user);
+
+    boolean checkAdminRole(User user);
 }

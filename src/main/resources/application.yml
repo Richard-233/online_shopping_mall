@@ -11,6 +11,10 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+  redis:
+    host: 47.113.225.99
+    port: 6379
+    password: 123456
 server:
   servlet:
     encoding:
@@ -24,3 +28,7 @@ logging:
   level:
     com.example.mybatisplus.mapper: debug
 file-upload-path: ./file
+
+file:
+  upload:
+    dir: D:/online_shopping_mall/
