@@ -5,7 +5,9 @@ import com.team07.online_shopping_mall.common.ApiRestReasponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
+import com.team07.online_shopping_mall.model.dto.CartInfoDTO;
 import com.team07.online_shopping_mall.model.dto.OrderInfoDTO;
+import com.team07.online_shopping_mall.model.vo.CartVO;
 import com.team07.online_shopping_mall.model.vo.OrderInfoVO;
 import com.team07.online_shopping_mall.service.OrderService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,22 +90,15 @@ public class CartController {
 
     /**
      * 描述: 获取购物车商品
-     * 参数：Cart cart(含id，productId,quantity)
+     * 参数：Long userId
      * @Author: xy
-     * @Return: 成功/失败信息
+     * @Return: cartVO
      */
-    @RequestMapping("/checkCart")
+    @RequestMapping("/searchCart")
     @ResponseBody
-    public ApiRestReasponse checkCart(@RequestParam Long userId) throws Exception{
-        QueryWrapper<Cart> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(Cart::getUserId,userId);
-        List<Cart> cartList = cartService.list(wrapper);
-        if(cartList.size()>0){
-            return ApiRestReasponse.success(cartList);
-        }
-        else {
-            return ApiRestReasponse.error(MallExceptionEnum.SYSTEM_ERROR);
-        }
+    public ApiRestReasponse searchCart(@RequestParam Long userId) throws Exception{
+        CartVO cartVO = cartService.searchCart(userId);
+        return ApiRestReasponse.success(cartVO);
     }
 
     /**

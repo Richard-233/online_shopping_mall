@@ -10,5 +10,24 @@
         <result column="quantity" property="quantity" />
         <result column="update_time" property="updateTime" />
     </resultMap>
+    <resultMap id="CartInfoMap" type="com.team07.online_shopping_mall.model.dto.CartInfoDTO">
+        <id column="cartId" property="cartId" />
+        <result column="userId" property="userId" />
+        <result column="productId" property="productId" />
+        <result column="shopId" property="shopId" />
+        <result column="shopName" property="shopName" />
+        <result column="productName" property="productName" />
+        <result column="productImg" property="productImg" />
+        <result column="price" property="price" />
+        <result column="quantity" property="quantity" />
+    </resultMap>
+    <select id="searchCart" resultType="com.team07.online_shopping_mall.model.dto.CartInfoDTO">
+        select c.id as cartId, c.user_id as userId, c.product_id as productId,
+               p.shop_id as shopId, s.`name` as shopName,
+               p.`name` as productName, p.image as productImg, p.price, c.quantity
+        from mall_cart c left join mall_product p on c.product_id = p.id
+                         left join mall_shop s on p.shop_id = s.id
+        where c.user_id = #{userId};
+    </select>
 
 </mapper>

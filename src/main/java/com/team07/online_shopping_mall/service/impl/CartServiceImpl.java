@@ -9,7 +9,10 @@ import com.team07.online_shopping_mall.mapper.CartMapper;
 import com.team07.online_shopping_mall.model.domain.Order;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
 import com.team07.online_shopping_mall.model.domain.Product;
+import com.team07.online_shopping_mall.model.dto.CartInfoDTO;
 import com.team07.online_shopping_mall.model.dto.OrderInfoDTO;
+import com.team07.online_shopping_mall.model.vo.CartInfoVO;
+import com.team07.online_shopping_mall.model.vo.CartVO;
 import com.team07.online_shopping_mall.service.CartService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,35 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Autowired
     OrderItemMapper orderItemMapper;
+
+    @Override
+    public CartVO searchCart(Long userId){
+        List<CartInfoDTO> cartInfoDTOList = cartMapper.searchCart(userId);
+        Map<Long, List<CartInfoDTO>> cartInfoMap = new TreeMap<>();
+        List<CartInfoVO> cartInfoVOList = new ArrayList<>();
+        for(CartInfoDTO cartInfoDTO : cartInfoDTOList){
+            Long shopId = cartInfoDTO.getShopId();
+            List<CartInfoDTO> cartInfoList;
+            if(cartInfoMap.containsKey(shopId)){
+                cartInfoList = cartInfoMap.get(shopId);
+            }
+            else {
+                cartInfoList = new ArrayList<>();
+            }
+            cartInfoList.add(cartInfoDTO);
+            cartInfoMap.put(shopId,cartInfoList);
+        }
+        for(Long key : cartInfoMap.keySet()){
+            List<CartInfoDTO> cartList = cartInfoMap.get(key);
+            CartInfoVO cartInfoVO = new CartInfoVO();
+            cartInfoVO.setShopId(key);
+            cartInfoVO.setShopCartInfoList(cartList);
+            cartInfoVOList.add(cartInfoVO);
+        }
+        CartVO cartVO = new CartVO();
+        cartVO.setCartInfoList(cartInfoVOList);
+        return cartVO;
+    }
 
     @Override
     public boolean addCartProduct(Cart cart){
