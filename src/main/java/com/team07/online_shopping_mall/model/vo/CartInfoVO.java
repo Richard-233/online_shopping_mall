@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
+// 查看购物车：一次封装
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+// 购物车生成订单：后端接收的数据形式
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
