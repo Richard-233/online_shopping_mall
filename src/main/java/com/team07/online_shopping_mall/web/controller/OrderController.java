@@ -1,6 +1,6 @@
 package com.team07.online_shopping_mall.web.controller;
 
-import com.team07.online_shopping_mall.common.ApiRestReasponse;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.model.vo.OrderVO;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,9 +83,9 @@ public class OrderController {
      */
     @RequestMapping(value = "/searchUserAllOrder", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestReasponse searchUserAllOrder(@RequestParam Long userId) throws Exception {
+    public ApiRestResponse searchUserAllOrder(@RequestParam Long userId) throws Exception {
         OrderVO orderVO = orderService.searchAllByUserId(userId);
-        return ApiRestReasponse.success(orderVO);
+        return ApiRestResponse.success(orderVO);
     }
 
     /**
@@ -94,9 +94,9 @@ public class OrderController {
      */
     @RequestMapping(value = "/searchUserOrderByStatus", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestReasponse searchUserOrderByStatus(@RequestParam Long userId, @RequestParam Integer status) throws Exception {
+    public ApiRestResponse searchUserOrderByStatus(@RequestParam Long userId, @RequestParam Integer status) throws Exception {
         OrderVO orderVO = orderService.searchUserOrderByStatus(userId, status);
-        return ApiRestReasponse.success(orderVO);
+        return ApiRestResponse.success(orderVO);
     }
 }
 
