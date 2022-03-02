@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,98 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public OrderVO searchUserOrderByStatus(Long userId, Integer status) {
         List<OrderItemDTO> orderItemDTOList = orderMapper.searchUserOrderByStatus(userId, status);
         return encapsulateData(orderItemDTOList);
+    }
+
+    @Override
+    public OrderVO searchShopAllOrder(Long shopId) {
+        List<OrderItemDTO> orderItemDTOList = orderMapper.searchShopAllOrder(shopId);
+        return encapsulateData(orderItemDTOList);
+    }
+
+    @Override
+    public OrderVO searchShopOrderByStatus(Long shopId, Integer status) {
+        List<OrderItemDTO> orderItemDTOList = orderMapper.searchShopOrderByStatus(shopId, status);
+        return encapsulateData(orderItemDTOList);
+    }
+
+    @Override
+    public boolean buyerChangeOrderStatus(Long orderId) {
+        Order order = orderMapper.selectById(orderId);
+        Integer status = order.getOrderStatus();
+        if(status == 2){
+            order.setOrderStatus(3);
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 3;
+        }
+        else if(status == 3){
+            order.setOrderStatus(4).setEndTime(LocalDateTime.now());
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 4;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean sellerChangeOrderStatus(Long orderId) {
+        Order order = orderMapper.selectById(orderId);
+        Integer status = order.getOrderStatus();
+        if(status == 1){
+            order.setOrderStatus(2).setDeliveryTime(LocalDateTime.now());
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 2;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean buyerRefund(Long orderId) {
+        Order order = orderMapper.selectById(orderId);
+        Integer status = order.getOrderStatus();
+        if(status == 1){
+            order.setOrderStatus(7).setEndTime(LocalDateTime.now());
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 7;
+        }
+        else if (status == 2){
+            order.setOrderStatus(5);
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 5;
+        }
+        else if (status == 3){
+            order.setOrderStatus(6);
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 6;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean sellerAgreeRefund(Long orderId) {
+        Order order = orderMapper.selectById(orderId);
+        Integer status = order.getOrderStatus();
+        if(status == 5 || status == 6){
+            order.setOrderStatus(7).setEndTime(LocalDateTime.now());
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 7;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean sellerRefuseRefund(Long orderId) {
+        Order order = orderMapper.selectById(orderId);
+        Integer status = order.getOrderStatus();
+        if(status == 5){
+            order.setOrderStatus(2);
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 2;
+        }
+        else if (status == 6){
+            order.setOrderStatus(3);
+            orderMapper.updateById(order);
+            return orderMapper.selectById(orderId).getOrderStatus() == 3;
+        }
+        return false;
     }
 
     // 根据DTOList生成Map再封装为VOList
