@@ -1,7 +1,7 @@
 package com.team07.online_shopping_mall.web.controller;
 
 import com.team07.online_shopping_mall.common.ApiRestResponse;
-import com.team07.online_shopping_mall.common.JsonResponse;
+import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.vo.OrderVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.team07.online_shopping_mall.service.OrderService;
-import com.team07.online_shopping_mall.model.domain.Order;
-
 
 /**
  *
@@ -32,52 +30,6 @@ public class OrderController {
     private OrderService orderService;
 
     /**
-    * 描述：根据Id 查询
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id)throws Exception {
-        Order  order =  orderService.getById(id);
-        return JsonResponse.success(order);
-    }
-
-    /**
-    * 描述：根据Id删除
-    *
-    */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public JsonResponse deleteById(@PathVariable("id") Long id) throws Exception {
-        orderService.removeById(id);
-        return JsonResponse.success(null);
-    }
-
-
-    /**
-    * 描述：根据Id 更新
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
-    @ResponseBody
-    public JsonResponse updateOrder(Order  order) throws Exception {
-        orderService.updateById(order);
-        return JsonResponse.success(null);
-    }
-
-
-    /**
-    * 描述:创建Order
-    *
-    */
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponse create(Order  order) throws Exception {
-        orderService.save(order);
-        return JsonResponse.success(null);
-    }
-
-    /**
      * 描述:查找用户所有订单
      * @Author: xy
      */
@@ -85,6 +37,17 @@ public class OrderController {
     @ResponseBody
     public ApiRestResponse searchUserAllOrder(@RequestParam Long userId) throws Exception {
         OrderVO orderVO = orderService.searchAllByUserId(userId);
+        return ApiRestResponse.success(orderVO);
+    }
+
+    /**
+     * 描述:查找店铺所有订单
+     * @Author: xy
+     */
+    @RequestMapping(value = "/searchShopAllOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse searchShopAllOrder(@RequestParam Long shopId) throws Exception {
+        OrderVO orderVO = orderService.searchShopAllOrder(shopId);
         return ApiRestResponse.success(orderVO);
     }
 
@@ -97,6 +60,82 @@ public class OrderController {
     public ApiRestResponse searchUserOrderByStatus(@RequestParam Long userId, @RequestParam Integer status) throws Exception {
         OrderVO orderVO = orderService.searchUserOrderByStatus(userId, status);
         return ApiRestResponse.success(orderVO);
+    }
+
+    /**
+     * 描述:根据status查找店铺订单
+     * @Author: xy
+     */
+    @RequestMapping(value = "/searchShopOrderByStatus", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse searchShopOrderByStatus(@RequestParam Long shopId, @RequestParam Integer status) throws Exception {
+        OrderVO orderVO = orderService.searchShopOrderByStatus(shopId, status);
+        return ApiRestResponse.success(orderVO);
+    }
+
+    /**
+     * 描述: 买家更改订单状态
+     * @Author: xy
+     */
+    @RequestMapping(value = "/buyerChangeOrderStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse buyerChangeOrderStatus(@RequestParam Long orderId) throws Exception {
+        if(orderService.buyerChangeOrderStatus(orderId)){
+            return ApiRestResponse.success();
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+    }
+
+    /**
+     * 描述: 卖家更改订单状态
+     * @Author: xy
+     */
+    @RequestMapping(value = "/sellerChangeOrderStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse sellerChangeOrderStatus(@RequestParam Long orderId) throws Exception {
+        if(orderService.sellerChangeOrderStatus(orderId)){
+            return ApiRestResponse.success();
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+    }
+
+    /**
+     * 描述: 买家更改订单状态
+     * @Author: xy
+     */
+    @RequestMapping(value = "/buyerRefund", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse buyerRefund(@RequestParam Long orderId) throws Exception {
+        if(orderService.buyerRefund(orderId)){
+            return ApiRestResponse.success();
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+    }
+
+    /**
+     * 描述: 卖家同意退款
+     * @Author: xy
+     */
+    @RequestMapping(value = "/sellerAgreeRefund", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse sellerAgreeRefund(@RequestParam Long orderId) throws Exception {
+        if(orderService.sellerAgreeRefund(orderId)){
+            return ApiRestResponse.success();
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+    }
+
+    /**
+     * 描述: 卖家拒绝退款
+     * @Author: xy
+     */
+    @RequestMapping(value = "/sellerRefuseRefund", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse sellerRefuseRefund(@RequestParam Long orderId) throws Exception {
+        if(orderService.sellerRefuseRefund(orderId)){
+            return ApiRestResponse.success();
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
     }
 }
 

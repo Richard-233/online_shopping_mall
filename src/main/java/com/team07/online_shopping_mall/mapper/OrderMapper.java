@@ -22,4 +22,8 @@ public interface OrderMapper extends BaseMapper<Order> {
     List<OrderItemDTO> searchAllByUserId(Long userId);
 
     List<OrderItemDTO> searchUserOrderByStatus(Long userId, Integer status);
+
+    List<OrderItemDTO> searchShopAllOrder(Long shopId);
+
+    List<OrderItemDTO> searchShopOrderByStatus(Long shopId, Integer status);
 }
