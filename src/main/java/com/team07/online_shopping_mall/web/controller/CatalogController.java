@@ -120,7 +120,7 @@ public class CatalogController {
     @PostMapping("/custom/list")
     @ResponseBody
     public ApiRestResponse listCategoryForCustom() {
-        List<CatalogVO> catalogVOS = catalogService.listCategoryForCustom();
+        List<CatalogVO> catalogVOS = catalogService.listCategoryForCustom(0L);
         return ApiRestResponse.success(catalogVOS);
     }
 

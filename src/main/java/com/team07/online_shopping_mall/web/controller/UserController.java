@@ -207,11 +207,16 @@ public class UserController {
     /**
      * 描述：根据Id 查询
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id) throws Exception {
+    public ApiRestResponse getById(HttpSession session) throws Exception {
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        Long id = currentUser.getId();
         User user = userService.getById(id);
-        return JsonResponse.success(user);
+        return ApiRestResponse.success(user);
     }
 
     /**
