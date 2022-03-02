@@ -209,7 +209,7 @@ public class UserController {
     /**
      * 描述：根据Id 查询
      */
-    @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/userInfo1111111111", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestResponse getById(HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
