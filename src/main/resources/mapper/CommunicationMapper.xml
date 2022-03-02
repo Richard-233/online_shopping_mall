@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.team07.online_shopping_mall.mapper.CommunicationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.team07.online_shopping_mall.model.domain.Communication">
+        <id column="id" property="id" />
+        <result column="sender_id" property="senderId" />
+        <result column="sender_name" property="senderName" />
+        <result column="receiver_id" property="receiverId" />
+        <result column="receiver_name" property="receiverName" />
+        <result column="messages" property="messages" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+<!--    <select id="getByName" resultMap="BaseResultMap">-->
+<!--        select * from mall_shop where name like concat('%',#{name},'%') and mall_shop.offline=0-->
+<!--    </select>-->
+
+<!--    <select id="getByNameSuper" resultMap="BaseResultMap">-->
+<!--        select * from mall_shop where name like concat('%',#{name},'%')-->
+<!--    </select>-->
+
+</mapper>
