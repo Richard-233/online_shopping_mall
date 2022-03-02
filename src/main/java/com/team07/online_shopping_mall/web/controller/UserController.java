@@ -3,9 +3,11 @@ package com.team07.online_shopping_mall.web.controller;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.common.JsonResponse;
+import com.team07.online_shopping_mall.common.utls.SecurityUtils;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
 import com.team07.online_shopping_mall.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -250,5 +252,18 @@ public class UserController {
         userService.save(user);
         return JsonResponse.success(null);
     }
+
+
+
+    /**
+     * 描述:登录前端User   //19:11
+     */
+    @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse<UserInfoDTO> getUserInfo() throws Exception {
+        return JsonResponse.success(SecurityUtils.getUserInfo());
+    }
+
+
 }
 
