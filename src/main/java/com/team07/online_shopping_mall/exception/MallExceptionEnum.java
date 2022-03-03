@@ -22,7 +22,13 @@ public enum MallExceptionEnum {
     UPLOAD_FAILED(10016, "图片上传失败"),
     SELECT_FAILED(10017, "查询失败或不存在"),
     ADD_FAILED(10018, "添加失败"),
-    SYSTEM_ERROR(20000, "系统异常");
+    SYSTEM_ERROR(20000, "系统异常"),
+    SET_DEFAULT_ADDRESS_FAILED(30000,"设置默认地址失败"),
+    SET_HOME_ADDRESS_FAILED(30001,"设置家地址失败"),
+    SET_SCHOOL_ADDRESS_FAILED(30002,"设置学校地址失败"),
+    SET_COMPANY_ADDRESS_FAILED(30003,"设置公司地址失败");
+
+
     /**
      * 异常码
      */

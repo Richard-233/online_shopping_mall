@@ -1,9 +1,14 @@
 package com.team07.online_shopping_mall.web.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
+import com.team07.online_shopping_mall.exception.MallException;
+import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.UserAddressMapper;
+import com.team07.online_shopping_mall.model.domain.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -45,11 +50,18 @@ public class UserAddressController {
      * 描述:创建UserAddress
      *
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "createUserAddress", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse createUserAddress(UserAddress userAddress) throws Exception {
-        userAddressService.save(userAddress);
-        return JsonResponse.success(null);
+    public ApiRestResponse createUserAddress(@RequestBody UserAddress userAddress) throws MallException {
+        QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
+        wrapper.eq("receiver_address",userAddress.getReceiverAddress()).eq("user_id",userAddress.getUserId()).eq("receiver_name",userAddress.getReceiverName()).eq("receiver_mobile",userAddress.getReceiverMobile());
+        List<UserAddress> list = userAddressService.list(wrapper);
+        if(list.size()==0) {
+            userAddressService.save(userAddress);
+            return ApiRestResponse.success();
+        }else {
+            return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
+        }
     }
 
 
@@ -57,41 +69,43 @@ public class UserAddressController {
     * 描述：根据Id查询
     *
     */
-    @GetMapping("/{id}")
+    @GetMapping("getId/{id}")
     @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id)throws Exception {
-        UserAddress  userAddress =  userAddressService.getById(id);
-        return JsonResponse.success(userAddress);
+    public ApiRestResponse getById(@PathVariable("id")Long id)throws MallException{
+        UserAddress userAddress = userAddressService.getById(id);
+        return ApiRestResponse.success(userAddress);
     }
 
     /**
     * 描述：根据Id删除
     *
     */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{userId}")
     @ResponseBody
-    public JsonResponse deleteById(@PathVariable("id") Long id) throws Exception {
+    public ApiRestResponse deleteById(@PathVariable("userId") Long userId,Long id) throws MallException {
+        QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id",userId);
         userAddressService.removeById(id);
-        return JsonResponse.success(null);
+        return ApiRestResponse.success();
     }
 
 
     /**
-    * 描述：更改UserAddress
+    * 描述：修改UserAddress
     *
     */
     @PostMapping("/updateUserAddress/{id}")
     @ResponseBody
-    public JsonResponse updateUserAddress(@PathVariable("id") Long id,@RequestParam("receiverAddress") String address,@RequestParam("receiverName") String name,@RequestParam("receiverMobile") String mobile) throws Exception {
+    public ApiRestResponse updateUserAddress(@PathVariable("id") Long id,@RequestParam("receiverAddress") String address,@RequestParam("receiverName") String name,@RequestParam("receiverMobile") String mobile) throws MallException {
         UserAddress userAddress = new UserAddress();
         userAddress.setReceiverAddress(address);
         userAddress.setReceiverName(name);
         userAddress.setReceiverMobile(mobile);
 
         UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-        userAddressUpdateWrapper.eq("id",id);
-        userAddressMapper.update(userAddress,userAddressUpdateWrapper);
-        return JsonResponse.success(null);
+        userAddressUpdateWrapper.eq("id", id);
+        userAddressMapper.update(userAddress, userAddressUpdateWrapper);
+        return ApiRestResponse.success();
     }
 
 
@@ -104,14 +118,29 @@ public class UserAddressController {
      */
     @PostMapping("/setDefaultAddress")
     @ResponseBody
-    public JsonResponse setDefaultUserAddress(String address)throws Exception{
+    public ApiRestResponse setDefaultUserAddress(Long userId, String address)throws MallException{
+        QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
+        wrapper.eq("status",4).eq("user_id",userId);
+        List<UserAddress> list = userAddressService.list(wrapper);
+
         UserAddress userAddress = new UserAddress();
-        userAddress.setStatus(4);
-        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-        userAddressUpdateWrapper.eq("receiver_address",address);
-        userAddressMapper.update(userAddress,userAddressUpdateWrapper);
-        return JsonResponse.success(null);
+        if(list.size()==1){
+            list.get(0).setStatus(0);
+            userAddressService.updateAddress(list.get(0),list.get(0).getReceiverAddress());
+            userAddress.setStatus(4);
+            userAddressService.updateAddress(userAddress,address);
+            return ApiRestResponse.success();
+        }else if(list.size()==0){
+            userAddress.setStatus(4);
+            userAddressService.updateAddress(userAddress,address);
+            return ApiRestResponse.success();
+        }
+        else {
+            return ApiRestResponse.error(MallExceptionEnum.SET_DEFAULT_ADDRESS_FAILED);
+        }
     }
+
+
 
 
     /**
@@ -120,13 +149,12 @@ public class UserAddressController {
      */
     @PostMapping("/setHomeAddress")
     @ResponseBody
-    public JsonResponse setHomeAddress(String address)throws Exception{
-        UserAddress userAddress = new UserAddress();
-        userAddress.setStatus(3);
-        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-        userAddressUpdateWrapper.eq("receiver_address",address);
-        userAddressMapper.update(userAddress,userAddressUpdateWrapper);
-        return JsonResponse.success(null);
+    public ApiRestResponse setHomeAddress(String address)throws MallException{
+        if(userAddressService.setAddress(address,1)){
+            return ApiRestResponse.success();
+        }else {
+            return ApiRestResponse.error(MallExceptionEnum.SET_HOME_ADDRESS_FAILED);
+        }
     }
 
 
@@ -136,13 +164,12 @@ public class UserAddressController {
      */
     @PostMapping("/setSchoolAddress")
     @ResponseBody
-    public JsonResponse setSchoolAddress(String address)throws Exception{
-        UserAddress userAddress = new UserAddress();
-        userAddress.setStatus(3);
-        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-        userAddressUpdateWrapper.eq("receiver_address",address);
-        userAddressMapper.update(userAddress,userAddressUpdateWrapper);
-        return JsonResponse.success(null);
+    public ApiRestResponse setSchoolAddress(String address)throws MallException{
+        if(userAddressService.setAddress(address,2)){
+            return ApiRestResponse.success();
+        }else {
+            return ApiRestResponse.error(MallExceptionEnum.SET_SCHOOL_ADDRESS_FAILED);
+        }
     }
 
 
@@ -152,13 +179,12 @@ public class UserAddressController {
      */
     @PostMapping("/setCompanyAddress")
     @ResponseBody
-    public JsonResponse setCompanyAddress(String address)throws Exception{
-        UserAddress userAddress = new UserAddress();
-        userAddress.setStatus(3);
-        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-        userAddressUpdateWrapper.eq("receiver_address",address);
-        userAddressMapper.update(userAddress,userAddressUpdateWrapper);
-        return JsonResponse.success(null);
+    public ApiRestResponse setCompanyAddress(String address)throws MallException{
+        if(userAddressService.setAddress(address,3)){
+            return ApiRestResponse.success();
+        }else {
+            return ApiRestResponse.error(MallExceptionEnum.SET_COMPANY_ADDRESS_FAILED);
+        }
     }
 
 }

@@ -3,9 +3,11 @@ package com.team07.online_shopping_mall.web.controller;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.common.JsonResponse;
+import com.team07.online_shopping_mall.common.utls.SecurityUtils;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
 import com.team07.online_shopping_mall.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -207,11 +209,16 @@ public class UserController {
     /**
      * 描述：根据Id 查询
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse getById(@PathVariable("id") Long id) throws Exception {
+    public ApiRestResponse getById(HttpSession session) throws Exception {
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        Long id = currentUser.getId();
         User user = userService.getById(id);
-        return JsonResponse.success(user);
+        return ApiRestResponse.success(user);
     }
 
     /**
@@ -245,5 +252,18 @@ public class UserController {
         userService.save(user);
         return JsonResponse.success(null);
     }
+
+
+
+    /**
+     * 描述:登录前端User   //19:11
+     */
+    @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse<UserInfoDTO> getUserInfo() throws Exception {
+        return JsonResponse.success(SecurityUtils.getUserInfo());
+    }
+
+
 }
 
