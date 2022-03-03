@@ -1,10 +1,12 @@
 package com.team07.online_shopping_mall.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
+import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.domain.User;
 import com.team07.online_shopping_mall.service.ShopService;
 import com.team07.online_shopping_mall.service.UserService;
@@ -110,6 +112,40 @@ public class ProductController {
             return ApiRestResponse.success(lists);
         else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
+
+
+
+    /**
+     * 描述：普通人查询所有（按time从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/selectall", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getAll()throws Exception {
+        QueryWrapper<Product> wrapper=new QueryWrapper<Product>().gt("status",0).orderByDesc("create_time");
+        List<Product> products=productService.list(wrapper);
+        if(products.size()>0)
+            return ApiRestResponse.success(products);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
+
+    /**
+     * 描述：管理员查询所有（按time从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/admin/selectall", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getAllSuper()throws Exception {
+        QueryWrapper<Product> wrapper=new QueryWrapper<Product>().orderByDesc("create_time");
+        List<Product> products=productService.list(wrapper);
+        if(products.size()>0)
+            return ApiRestResponse.success(products);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
 
 
 
@@ -240,7 +276,7 @@ public class ProductController {
                 throw new MallException(MallExceptionEnum.MKDIR_FAILED);
             }
         }
-        try {
+            try {
             file.transferTo(destFile);
         } catch (IOException e) {
             e.printStackTrace();
