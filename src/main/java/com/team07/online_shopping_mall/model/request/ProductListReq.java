@@ -103,4 +103,20 @@ public class ProductListReq {
     public void setPageNum(Integer pageNum) {
         this.pageNum = pageNum;
     }
+
+    @Override
+    public String toString() {
+        return "ProductListReq{" +
+                "id=" + id +
+                ", keyword='" + keyword + '\'' +
+                ", shopId=" + shopId +
+                ", image='" + image + '\'' +
+                ", detail='" + detail + '\'' +
+                ", catalogId=" + catalogId +
+                ", price=" + price +
+                ", orderBy='" + orderBy + '\'' +
+                ", pageSize=" + pageSize +
+                ", pageNum=" + pageNum +
+                '}';
+    }
 }
