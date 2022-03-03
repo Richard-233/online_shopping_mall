@@ -57,6 +57,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public boolean buyerChangeOrderStatus(Long orderId) {
         Order order = orderMapper.selectById(orderId);
+        if(order == null){
+            return false;
+        }
         Integer status = order.getOrderStatus();
         if(status == 2){
             order.setOrderStatus(3);
@@ -74,6 +77,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public boolean sellerChangeOrderStatus(Long orderId) {
         Order order = orderMapper.selectById(orderId);
+        if(order == null){
+            return false;
+        }
         Integer status = order.getOrderStatus();
         if(status == 1){
             order.setOrderStatus(2).setDeliveryTime(LocalDateTime.now());
@@ -86,6 +92,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public boolean buyerRefund(Long orderId) {
         Order order = orderMapper.selectById(orderId);
+        if(order == null){
+            return false;
+        }
         Integer status = order.getOrderStatus();
         if(status == 1){
             order.setOrderStatus(7).setEndTime(LocalDateTime.now());
@@ -108,6 +117,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public boolean sellerAgreeRefund(Long orderId) {
         Order order = orderMapper.selectById(orderId);
+        if(order == null){
+            return false;
+        }
         Integer status = order.getOrderStatus();
         if(status == 5 || status == 6){
             order.setOrderStatus(7).setEndTime(LocalDateTime.now());
@@ -120,6 +132,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public boolean sellerRefuseRefund(Long orderId) {
         Order order = orderMapper.selectById(orderId);
+        if(order == null){
+            return false;
+        }
         Integer status = order.getOrderStatus();
         if(status == 5){
             order.setOrderStatus(2);
