@@ -2,14 +2,11 @@ package com.team07.online_shopping_mall.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
-import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
-import com.team07.online_shopping_mall.model.dto.CartInfoDTO;
 import com.team07.online_shopping_mall.model.dto.OrderInfoDTO;
 import com.team07.online_shopping_mall.model.vo.CartVO;
 import com.team07.online_shopping_mall.model.vo.OrderInfoVO;
-import com.team07.online_shopping_mall.service.OrderService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -91,7 +88,6 @@ public class CartController {
      * @Author: xy
      * @Return: 成功/失败信息
      */
-
     @RequestMapping(value = "/addCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse addCartProducts(@RequestBody Cart cart) throws Exception{
@@ -149,13 +145,5 @@ public class CartController {
         }
         return ApiRestResponse.success();
     }
-//
-//    @RequestMapping("/test")
-//    @ResponseBody
-//    public ApiRestResponse test(@RequestBody OrderInfoVO query) throws Exception{
-//        List<OrderInfoDTO> orderInfoList = query.getOrderInfoList();
-//        System.out.println(orderInfoList);
-//        return ApiRestResponse.success();
-//    }
 }
 

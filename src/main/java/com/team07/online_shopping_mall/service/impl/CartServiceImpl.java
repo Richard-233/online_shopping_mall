@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -156,7 +157,8 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
                     .setReceiverAddress(receiverAddress)
                     .setReceiverName(receiverName)
                     .setReceiverMobile(receiverMobile)
-                    .setPostage(postage);
+                    .setPostage(postage)
+                    .setPayTime(LocalDateTime.now());
             // 插入新order
             orderMapper.insert(thisOrder);
             QueryWrapper<Order> wrapper = new QueryWrapper<>();
@@ -183,5 +185,4 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         return postageMap;
     }
 }
-
 

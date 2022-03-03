@@ -1,26 +1,27 @@
 package com.team07.online_shopping_mall.web.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
 import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.model.query.ProductListQuery;
+import com.team07.online_shopping_mall.model.request.ProductListReq;
 import com.team07.online_shopping_mall.service.ShopService;
-import com.team07.online_shopping_mall.service.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.service.ProductService;
 import com.team07.online_shopping_mall.model.domain.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +52,6 @@ public class ProductController {
     @Autowired
     private ProductMapper productMapper;
     @Autowired
-    private UserService userService;
-    @Autowired
     private ShopService shopService;
 
 
@@ -63,10 +62,13 @@ public class ProductController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestResponse getById(@PathVariable("id") Long id)throws Exception {
-        Product  product =  productService.getById(id);
-        if(product.getStatus()!=0)
-        return ApiRestResponse.success(product);
-        else
+        Product product = productService.getById(id);
+        if (product.getStatus() != 0) {
+            product.setStock(null);
+            product.setCreateTime(null);
+            product.setUpdateTime(null);
+            return ApiRestResponse.success(product);
+        } else
             return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
 
@@ -212,17 +214,51 @@ public class ProductController {
                 productService.updateById(product);
                 return ApiRestResponse.success("成功取消推荐");
             }
-            if(product.getStatus().equals(1)){
+            if (product.getStatus().equals(1)) {
                 product.setStatus(2);
                 productService.updateById(product);
                 return ApiRestResponse.success("成功推荐");
             }
-            if(product.getStatus().equals(0)){
+            if (product.getStatus().equals(0)) {
                 return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
             }
         }
         return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
     }
+
+    @PostMapping("/batchUpdateSellStatus")
+    @ResponseBody
+    public ApiRestResponse batchUpdateSellStatus(@RequestParam Integer[] ids, @RequestParam Integer sellStatus) {
+        productService.batchUpdateSellStatus(ids, sellStatus);
+        return ApiRestResponse.success();
+    }
+
+    @PostMapping("/admin/product/list")
+    @ResponseBody
+    public ApiRestResponse AdminList(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        PageInfo pageInfo = productService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
+    }
+
+    @PostMapping("/seller/product/list")
+    @ResponseBody
+    public ApiRestResponse sellerList(@RequestParam Integer pageNum, @RequestParam Integer pageSize, HttpSession session) {
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        Long currentUserId = currentUser.getId();
+        PageInfo pageInfo = productService.listForSeller(pageNum, pageSize, currentUserId);
+        return ApiRestResponse.success(pageInfo);
+    }
+
+    @GetMapping("/list")
+    @ResponseBody
+    public ApiRestResponse list(ProductListReq productListReq) {
+        PageInfo list = productService.list(productListReq);
+        return ApiRestResponse.success(list);
+    }
+
 
     @PostMapping("/upload/file")
     @ResponseBody

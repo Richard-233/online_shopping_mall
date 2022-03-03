@@ -85,9 +85,9 @@ public class CatalogServiceImpl extends ServiceImpl<CatalogMapper, Catalog> impl
 
     @Override
     @Cacheable("listCategoryForCustom")
-    public List<CatalogVO> listCategoryForCustom() {
+    public List<CatalogVO> listCategoryForCustom(Long parentId) {
         ArrayList<CatalogVO> catalogVOList = new ArrayList<>();
-        recursivelyFindCategories(catalogVOList, 0L);
+        recursivelyFindCategories(catalogVOList, parentId);
         return catalogVOList;
     }
 
