@@ -283,7 +283,7 @@ public class ProductController {
 //        if (currentUser == null) {
 //            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
 //        }
-        //System.out.println(pageNum+"000"+pageSize);
+        //System.out.println(pageNum+"000"+pageSize);123
         UserInfoDTO userInfo = securityUtils.getUserInfo();
         Long currentUserId = userInfo.getId();
 //        Long currentUserId = currentUser.getId();
