@@ -208,7 +208,7 @@ public class ProductController {
         //if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
         SecurityUtils securityUtils = new SecurityUtils();
         UserInfoDTO userInfo = securityUtils.getUserInfo();
-        //调试用
+        //调试用123
         QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>();
         wrapper.eq("user_id",userInfo.getId());
         Shop oneshop = shopService.getOne(wrapper);
