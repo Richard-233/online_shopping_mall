@@ -32,11 +32,11 @@ public class SecurityUtils {
         if (userInfo == null) {
             userInfo = new User();
             userInfo.setUsername("模拟用户");
-            userInfoDTO.setId(1L);
+            userInfoDTO.setId(106L);
             userInfoDTO.setName("模拟用户");
             userInfoDTO.setUserType(1L);
         }else{
-            userInfoDTO.setId(1L);
+            userInfoDTO.setId(106L);
             userInfoDTO.setName("模拟用户");
             userInfoDTO.setUserType(1L);
         }

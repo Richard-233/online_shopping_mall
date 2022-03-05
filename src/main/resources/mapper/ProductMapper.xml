@@ -4,32 +4,101 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.team07.online_shopping_mall.model.domain.Product">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="shop_id" property="shopId" />
-        <result column="image" property="image" />
-        <result column="detail" property="detail" />
-        <result column="catalog_id" property="catalogId" />
-        <result column="price" property="price" />
-        <result column="stock" property="stock" />
-        <result column="status" property="status" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="image" property="image"/>
+        <result column="detail" property="detail"/>
+        <result column="catalog_id" property="catalogId"/>
+        <result column="price" property="price"/>
+        <result column="stock" property="stock"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , shop_id, `name`, image, detail, catalog_id, price, stock, `status`, create_time,
+    update_time
+    </sql>
     <select id="getByName" resultMap="BaseResultMap">
-    select distinct* from mall_product where name like concat('%',#{name},'%') and mall_product.status &gt; 0
+        select distinct id,name,
+                        shop_id,
+                        image,
+                        detail,
+                        catalog_id,
+                        price,stock,
+                        status,create_time,update_time
+        from mall_product
+        where name like concat('%', #{name}, '%')
+          and mall_product.status &gt; 0
     </select>
-<!--    <select id="identifyUser" resultMap="BaseResultMap">-->
-<!--select distinct #{product.shopId}, mall_shop.id from mall_shop,mall_user,mall_product where  #{user.id}=mall_shop.userId-->
+    <!--    <select id="identifyUser" resultMap="BaseResultMap">-->
+    <!--select distinct #{product.shopId}, mall_shop.id from mall_shop,mall_user,mall_product where  #{user.id}=mall_shop.userId-->
 
-<!--    </select>-->
+    <!--    </select>-->
 
     <select id="getShopIdByUserId" resultType="java.lang.Long">
-        select distinct mall_shop.id from mall_shop,mall_user where mall_shop.user_id=#{userId}
+        select distinct mall_shop.id
+        from mall_shop,
+             mall_user
+        where mall_shop.user_id = #{userId}
     </select>
 
     <select id="getByNameSuper" resultMap="BaseResultMap">
-    select distinct * from mall_product where name like concat('%',#{name},'%')
+        select distinct *
+        from mall_product
+        where name like concat('%', #{name}, '%')
     </select>
 
+    <update id="batchUpdateSellStatus">
+        update mall_product set status=#{sellStatus} where id in
+        <foreach collection="ids" close=")" item="id" open="(" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="selectListForAdmin" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_product
+        order by update_time desc
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_product
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectListForSeller" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_product
+        where shop_id in (select id from mall_shop where user_id=#{userId})
+        order by mall_product.update_time desc
+    </select>
+    <select id="selectMyList" resultMap="BaseResultMap"
+            parameterType="com.team07.online_shopping_mall.model.query.ProductListQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_product
+        <where>
+            <if test="query.keyword != null">
+                and name like #{query.keyword}
+            </if>
+            <if test="query.categoryIds != null">
+                and categoryIds in
+                <foreach collection="query.categoryIds" close=")" item="item" open="(" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.shopId != null">
+                and shop_id = #{query.shopId,jdbcType=BIGINT}
+            </if>
+            and status>0
+        </where>
+        order by update_time desc
+    </select>
 </mapper>

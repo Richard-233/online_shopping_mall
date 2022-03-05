@@ -5,6 +5,7 @@ import com.team07.online_shopping_mall.model.domain.Catalog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.team07.online_shopping_mall.model.request.AddCategoryReq;
 import com.team07.online_shopping_mall.model.vo.CatalogVO;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -26,5 +27,5 @@ public interface CatalogService extends IService<Catalog> {
 
     PageInfo listForAdmin(Integer pageNum, Integer pageSize);
 
-    List<CatalogVO> listCategoryForCustom();
+    List<CatalogVO> listCategoryForCustom(Long parentId);
 }

@@ -10,6 +10,7 @@ public class OrderItemDTO {
     private Long userId;
     private Long shopId;
 
+    private String productName;
     private String productImg;
     private Integer unitPrice;
     private Integer quantity;
