@@ -26,5 +26,5 @@ public interface ProductService extends IService<Product> {
 
     PageInfo listForSeller(Integer pageNum, Integer pageSize, Long currentUserId);
 
-    PageInfo list(ProductListReq productListReq);
+    PageInfo listNew(ProductListReq productListReq);
 }
