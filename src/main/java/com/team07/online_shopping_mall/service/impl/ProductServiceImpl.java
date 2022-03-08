@@ -66,9 +66,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return pageInfo;
     }
 
-  //  @Override
+    @Override
     @Cacheable("list")
-    public PageInfo listNew(ProductListReq productListReq) {
+    public PageInfo listYsr(ProductListReq productListReq) {
         ProductListQuery productListQuery = new ProductListQuery();
         if (!StringUtils.isEmpty(productListReq.getKeyword())) {
             String keyword = new StringBuilder().append("%").append(productListReq.getKeyword()).append("%").toString();
