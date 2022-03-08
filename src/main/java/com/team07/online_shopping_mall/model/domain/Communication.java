@@ -48,6 +48,33 @@ import lombok.experimental.Accessors;
         @ApiModelProperty(value = "聊天消息")
         private String messages;
 
+        public String getSenderName() {
+            return senderName;
+        }
+
+        public void setSenderName(String senderName) {
+            this.senderName = senderName;
+        }
+
+        public String getReceiverName() {
+            return receiverName;
+        }
+
+        public void setReceiverName(String receiverName) {
+            this.receiverName = receiverName;
+        }
+
+        public Integer getIsRead() {
+            return isRead;
+        }
+
+        public void setIsRead(Integer isRead) {
+            this.isRead = isRead;
+        }
+
+        @ApiModelProperty(value = "是否已读")
+        private Integer isRead;
+
         @ApiModelProperty(value = "时间")
         private LocalDateTime createTime;
 

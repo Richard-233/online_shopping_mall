@@ -147,13 +147,16 @@ public class ProductController {
 //        Product product=new Product();
 //        product.setId(id);
 //        product.setShopId(shopId);
-
         //System.out.println(product);
-        SecurityUtils securityUtils = new SecurityUtils();
-        UserInfoDTO userInfo = securityUtils.getUserInfo();
-        if((userInfo.getId().equals(shopService.getById(product.getShopId()).getUserId())
+
+
+
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if((currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())
                 &&productService.getById(product.getId()).getShopId().equals(product.getShopId()))
-                ||userInfo.getUserType().equals(2L)){
+                ||currentUser.getRole().equals(2)){
             productService.updateById(product);
             return ApiRestResponse.success(product);
         }
@@ -168,11 +171,11 @@ public class ProductController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestResponse deleteByIdLogic(@RequestParam Long id,HttpSession session) throws Exception {
-        //User currentUser = (User) session.getAttribute(Constant.MALL_USER);
-        SecurityUtils securityUtils = new SecurityUtils();
-        UserInfoDTO userInfo = securityUtils.getUserInfo();
-        //if(currentUser.getId().equals(shopService.getById(productService.getById(id).getShopId()).getUserId())||currentUser.getRole().equals(2)){
-        if(userInfo.getId().equals(shopService.getById(productService.getById(id).getShopId()).getUserId())||userInfo.getUserType().equals(2L)){
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+        if(currentUser.getId().equals(shopService.getById(productService.getById(id).getShopId()).getUserId())||currentUser.getRole().equals(2)){
+        //if(userInfo.getId().equals(shopService.getById(productService.getById(id).getShopId()).getUserId())||userInfo.getUserType().equals(2L)){
             Product product=productService.getById(id);
             product.setStatus(0);
             productService.updateById(product);
@@ -204,17 +207,19 @@ public class ProductController {
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestResponse create(Product  product,HttpSession session) throws Exception {
-        //User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         //if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
-        SecurityUtils securityUtils = new SecurityUtils();
-        UserInfoDTO userInfo = securityUtils.getUserInfo();
-        //调试用123
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        //调试用
         QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>();
-        wrapper.eq("user_id",userInfo.getId());
+        wrapper.eq("user_id",currentUser.getId()).eq("offline",0);
+        //System.out.println(1111);
         Shop oneshop = shopService.getOne(wrapper);
         product.setShopId(oneshop.getId());
-        if(userInfo.getId().equals(shopService.getById(product.getShopId()).getUserId())||userInfo.getUserType().equals(2L)){
+        if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
             productService.save(product);
+            //System.out.println(2222);
             return ApiRestResponse.success(productService.getById(product.getId()));
         }
         else return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
@@ -278,15 +283,16 @@ public class ProductController {
     @GetMapping("/seller/product/list")
     @ResponseBody
     public ApiRestResponse sellerList(@RequestParam Integer pageNum, @RequestParam Integer pageSize, HttpSession session) {
-        SecurityUtils securityUtils = new SecurityUtils();
-//        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
-//        if (currentUser == null) {
-//            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
-//        }
-        //System.out.println(pageNum+"000"+pageSize);123
-        UserInfoDTO userInfo = securityUtils.getUserInfo();
-        Long currentUserId = userInfo.getId();
-//        Long currentUserId = currentUser.getId();
+
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        //System.out.println(pageNum+"000"+pageSize);
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        Long currentUserId = userInfo.getId();
+        Long currentUserId = currentUser.getId();
         PageInfo pageInfo = productService.listForSeller(pageNum, pageSize, currentUserId);
         //System.out.println(pageInfo);
         return ApiRestResponse.success(pageInfo);

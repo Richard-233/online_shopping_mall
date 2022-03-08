@@ -10,6 +10,7 @@
         <result column="receiver_id" property="receiverId" />
         <result column="receiver_name" property="receiverName" />
         <result column="messages" property="messages" />
+        <result column="is_read" property="isRead" />
         <result column="create_time" property="createTime" />
     </resultMap>
 <!--    <select id="getByName" resultMap="BaseResultMap">-->
