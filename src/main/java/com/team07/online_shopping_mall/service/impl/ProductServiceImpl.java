@@ -14,6 +14,7 @@ import com.team07.online_shopping_mall.service.ProductService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
@@ -66,6 +67,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
+    @Cacheable("list")
     public PageInfo list(ProductListReq productListReq) {
         ProductListQuery productListQuery = new ProductListQuery();
         if (!StringUtils.isEmpty(productListReq.getKeyword())) {
