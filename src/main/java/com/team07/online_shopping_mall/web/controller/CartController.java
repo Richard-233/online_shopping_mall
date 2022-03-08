@@ -91,6 +91,7 @@ public class CartController {
     @RequestMapping(value = "/addCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse addCartProducts(@RequestBody Cart cart) throws Exception{
+        System.out.println(cart);
         if(cartService.addCartProduct(cart)){
             return ApiRestResponse.success();
         }

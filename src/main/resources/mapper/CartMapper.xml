@@ -23,8 +23,8 @@
     </resultMap>
     <select id="searchCart" resultType="com.team07.online_shopping_mall.model.dto.CartInfoDTO">
         select c.id as cartId, c.user_id as userId, c.product_id as productId,
-               p.shop_id as shopId, s.`name` as shopName,
-               p.`name` as productName, p.image as productImg, p.price, c.quantity
+               p.shop_id as shopId, s.`name` as shopName,p.`name` as productName,
+               p.image as productImg, p.price, c.quantity, c.selected
         from mall_cart c left join mall_product p on c.product_id = p.id
                          left join mall_shop s on p.shop_id = s.id
         where c.user_id = #{userId}

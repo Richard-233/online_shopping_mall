@@ -41,6 +41,9 @@ public class Cart extends Model<Cart> {
             @ApiModelProperty(value = "商品数量")
     private Integer quantity;
 
+            @ApiModelProperty(value = "是否选择")
+    private boolean selected;
+
     private LocalDateTime updateTime;
 
 
