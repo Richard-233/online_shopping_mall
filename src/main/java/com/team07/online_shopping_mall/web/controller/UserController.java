@@ -38,25 +38,37 @@ public class UserController {
     /**
      * 注册接口
      *
-     * @param userName
-     * @param password
+     * @param
      * @return
      * @throws MallException
      */
     @PostMapping("/register")
     @ResponseBody
-    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws MallException {
-        if (StringUtils.isEmpty(userName)) {
+//    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws MallException {
+    public ApiRestResponse register(@RequestBody User user) throws MallException {
+//        if (StringUtils.isEmpty(userName)) {
+//            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
+//        }
+//        if (StringUtils.isEmpty(password)) {
+//            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
+//        }
+//        //密码长度不能少于8位
+//        if (password.length() < 8) {
+//            return ApiRestResponse.error(MallExceptionEnum.PASSWORD_TOO_SHORT);
+//        }
+//        userService.register(userName, password);
+//        return ApiRestResponse.success();
+        if (StringUtils.isEmpty(user.getUsername())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
-        if (StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(user.getPassword())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
         //密码长度不能少于8位
-        if (password.length() < 8) {
+        if (user.getPassword().length() < 8) {
             return ApiRestResponse.error(MallExceptionEnum.PASSWORD_TOO_SHORT);
         }
-        userService.register(userName, password);
+        userService.register(user.getUsername(), user.getPassword());
         return ApiRestResponse.success();
     }
 

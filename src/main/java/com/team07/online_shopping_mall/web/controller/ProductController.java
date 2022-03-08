@@ -307,21 +307,19 @@ public class ProductController {
     public ApiRestResponse getAll()throws Exception {
         QueryWrapper<Product> wrapper=new QueryWrapper<Product>().gt("status",0).
                 orderByDesc("create_time");
-        List<Product> products=productService.list(wrapper);
-        if(products.size()>0){
+        List<Product> products = productService.list(wrapper);
+        if (products.size() > 0) {
             return ApiRestResponse.success(products);
-        }
-        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+        } else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
 
 
-
-//    @GetMapping("/list")
-//    @ResponseBody
-//    public ApiRestResponse list(ProductListReq productListReq) {
-//        PageInfo list = productService.list(productListReq);
-//        return ApiRestResponse.success(list);
-//    }
+    @GetMapping("/list")
+    @ResponseBody
+    public ApiRestResponse list(ProductListReq productListReq) {
+        PageInfo list = productService.listYsr(productListReq);
+        return ApiRestResponse.success(list);
+    }
 
 
     @PostMapping("/upload/file")
