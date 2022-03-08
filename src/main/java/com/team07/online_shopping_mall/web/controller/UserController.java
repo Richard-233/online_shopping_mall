@@ -75,26 +75,25 @@ public class UserController {
     /**
      * 登录接口
      *
-     * @param userName
-     * @param password
+     * @param
      * @param session
      * @return
      * @throws MallException
      */
     @PostMapping("/login")
     @ResponseBody
-    public ApiRestResponse login(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
-        if (StringUtils.isEmpty(userName)) {
+    public ApiRestResponse login(@RequestBody User user, HttpSession session) throws MallException {
+        if (StringUtils.isEmpty(user.getUsername())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
-        if (StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(user.getPassword())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
-        User user = userService.login(userName, password);
+        User user_new = userService.login(user.getUsername(), user.getPassword());
         //保存用户信息除了密码
-        user.setPassword(null);
-        session.setAttribute(Constant.MALL_USER, user);
-        return ApiRestResponse.success(user);
+        user_new.setPassword(null);
+        session.setAttribute(Constant.MALL_USER, user_new);
+        return ApiRestResponse.success(user_new);
     }
 
     /**
@@ -221,16 +220,16 @@ public class UserController {
     /**
      * 描述：根据Id 查询
      */
-    @RequestMapping(value = "/userInfo1111", method = RequestMethod.GET)
+    @GetMapping("/loginUserInfo")
     @ResponseBody
     public ApiRestResponse getById(HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
-        Long id = currentUser.getId();
-        User user = userService.getById(id);
-        return ApiRestResponse.success(user);
+//        Long id = currentUser.getId();
+//        User user = userService.getById(id);
+        return ApiRestResponse.success(currentUser);
     }
 
     /**
