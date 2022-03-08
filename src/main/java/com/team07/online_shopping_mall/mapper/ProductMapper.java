@@ -36,6 +36,6 @@ public interface ProductMapper extends BaseMapper<Product> {
 
     Product selectByPrimaryKey(Long id);
 
-    List<Product> selectList(@Param("query") ProductListQuery query);
+    List<Product> selectMyList(@Param("query") ProductListQuery query);
 
 }

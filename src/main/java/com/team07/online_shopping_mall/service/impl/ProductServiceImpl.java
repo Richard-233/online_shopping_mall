@@ -66,9 +66,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return pageInfo;
     }
 
-    @Override
+  //  @Override
     @Cacheable("list")
-    public PageInfo list(ProductListReq productListReq) {
+    public PageInfo listNew(ProductListReq productListReq) {
         ProductListQuery productListQuery = new ProductListQuery();
         if (!StringUtils.isEmpty(productListReq.getKeyword())) {
             String keyword = new StringBuilder().append("%").append(productListReq.getKeyword()).append("%").toString();
@@ -90,7 +90,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         } else {
             PageHelper.startPage(productListReq.getPageNum(), productListReq.getPageSize());
         }
-        List<Product> productList = productMapper.selectList(productListQuery);
+        List<Product> productList = productMapper.selectMyList(productListQuery);
         PageInfo pageInfo = new PageInfo(productList);
         return pageInfo;
     }

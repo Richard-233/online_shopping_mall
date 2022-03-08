@@ -15,6 +15,8 @@ spring:
     host: 47.113.225.99
     port: 6379
     password: 123456
+#  resources:
+#    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${file-upload-path}
 server:
   servlet:
     encoding:
@@ -31,4 +33,4 @@ file-upload-path: ./file
 
 file:
   upload:
-    dir: D:/online_shopping_mall/
+    dir: E:/online_shopping_mall/

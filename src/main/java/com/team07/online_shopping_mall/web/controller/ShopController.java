@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
+import com.team07.online_shopping_mall.common.utls.SecurityUtils;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.ShopMapper;
 import com.team07.online_shopping_mall.model.domain.Product;
 import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -57,7 +59,6 @@ public class ShopController {
     }
 
 
-//8989
     /**
      * 描述：管理员根据Id 查询111
      *
@@ -68,6 +69,33 @@ public class ShopController {
         Shop  shop =  shopService.getById(id);
         return ApiRestResponse.success(shop);
     }
+
+
+    /**
+     * 描述：所有人根据userId 查询111
+     *
+     */
+    @RequestMapping(value = "/selectByUserId", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getByUserId(HttpSession session)throws Exception {
+
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        Long currentUserId =currentUser.getId();
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        Long currentUserId = userInfo.getId();
+        QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>();
+        wrapper.eq("user_id",currentUserId).eq("offline",0);
+        List<Shop> shop=  shopService.list(wrapper);
+        if(shop.get(0).getOffline().equals(0))
+            return ApiRestResponse.success(shop);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+
 
 
     /**
@@ -167,11 +195,21 @@ public class ShopController {
      * 描述：普通人根据Id删除（逻辑删除）1111
      *
      */
-    @RequestMapping(value = "/delete", method = RequestMethod.PUT)
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse deleteByIdLogic(@RequestParam("id") Long id, HttpSession session) throws Exception {
+    public ApiRestResponse deleteByIdLogic(Long id, HttpSession session) throws Exception {
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        Long currentUserId = userInfo.getId();
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
-        if(shopService.identifyUser(currentUser.getId(),shopService.getById(id).getUserId())||currentUser.getRole().equals(2)){
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        Long currentUserId =currentUser.getId();
+        //System.out.println(id);
+        if(shopService.identifyUser(currentUserId,shopService.getById(id).getUserId())||currentUser.getRole().equals(2)){
+//        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+//        if(shopService.identifyUser(currentUser.getId(),shopService.getById(id).getUserId())||currentUser.getRole().equals(2)){
             Shop shop=shopService.getById(id);
             shop.setOffline(1);
             shopService.updateById(shop);
@@ -199,13 +237,15 @@ public class ShopController {
      * 描述：根据Id 更新（如果是管理员，那么就允许更新所有字段；如果是普通人，那么只允许更新部分字段）111
      *   对于普通人，前端只提供部分字段的接口就是，后端就调这个接口
      */
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse updateProduct(@RequestBody Shop  shop,HttpSession session) throws Exception {
+    public ApiRestResponse updateProduct(Shop  shop,HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
-//        System.out.println(currentUser.getId());
-//        System.out.println(shop);
         if(shopService.identifyUser(currentUser.getId(),shop.getUserId())||currentUser.getRole().equals(2)){
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        Long currentUserId = userInfo.getId();
+//        if(shopService.identifyUser(currentUserId,shop.getUserId())||userInfo.getUserType().equals(2L)){
             shopService.updateById(shop);
             return ApiRestResponse.success(shop);
         }
@@ -219,11 +259,17 @@ public class ShopController {
      * 描述:所有人创建Shop1111
      *
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse create(@RequestBody  Shop  shop,HttpSession session) throws Exception {
+    public ApiRestResponse create(Shop  shop,HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if(currentUser.getId().equals(shop.getUserId())||currentUser.getRole().equals(2)){
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        Long currentUserId = userInfo.getId();
+//        System.out.println(99999);
+//        System.out.println(shop);
+//        if(currentUserId.equals(shop.getUserId())||userInfo.getUserType().equals(2L)){
             shopService.save(shop);
         }
         QueryWrapper<Shop> wrapper= Wrappers.query();
