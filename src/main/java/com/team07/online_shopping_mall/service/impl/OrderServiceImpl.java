@@ -1,12 +1,15 @@
 package com.team07.online_shopping_mall.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.team07.online_shopping_mall.model.domain.Order;
 import com.team07.online_shopping_mall.mapper.OrderMapper;
+import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.dto.OrderItemDTO;
 import com.team07.online_shopping_mall.model.vo.OrderItemVO;
 import com.team07.online_shopping_mall.model.vo.OrderVO;
 import com.team07.online_shopping_mall.service.OrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.team07.online_shopping_mall.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     OrderMapper orderMapper;
 
+    @Autowired
+    ShopService shopService;
+
+    @Override
+    public OrderVO searchAllOrder() {
+        List<OrderItemDTO> orderItemDTOList = orderMapper.searchAllOrder();
+        return encapsulateData(orderItemDTOList);
+    }
+
+    @Override
+    public OrderVO searchOrderByStatus(Integer status) {
+        List<OrderItemDTO> orderItemDTOList = orderMapper.searchOrderByStatus(status);
+        if(status == 5){
+            List<OrderItemDTO> orderItemDTOList6 = orderMapper.searchOrderByStatus(6);
+            orderItemDTOList.addAll(orderItemDTOList6);
+        }
+        return encapsulateData(orderItemDTOList);
+    }
+
     @Override
     public OrderVO searchAllByUserId(Long userId) {
         List<OrderItemDTO> orderItemDTOList = orderMapper.searchAllByUserId(userId);
@@ -39,18 +61,32 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public OrderVO searchUserOrderByStatus(Long userId, Integer status) {
         List<OrderItemDTO> orderItemDTOList = orderMapper.searchUserOrderByStatus(userId, status);
+        if(status == 5){
+            List<OrderItemDTO> orderItemDTOList6 = orderMapper.searchUserOrderByStatus(userId, 6);
+            orderItemDTOList.addAll(orderItemDTOList6);
+        }
         return encapsulateData(orderItemDTOList);
     }
 
     @Override
-    public OrderVO searchShopAllOrder(Long shopId) {
-        List<OrderItemDTO> orderItemDTOList = orderMapper.searchShopAllOrder(shopId);
+    public OrderVO searchShopAllOrder(Long userId) {
+        QueryWrapper<Shop> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Shop::getUserId,userId).eq(Shop::getOffline,0);
+        Shop shop = shopService.getOne(wrapper);
+        List<OrderItemDTO> orderItemDTOList = orderMapper.searchShopAllOrder(shop.getId());
         return encapsulateData(orderItemDTOList);
     }
 
     @Override
-    public OrderVO searchShopOrderByStatus(Long shopId, Integer status) {
-        List<OrderItemDTO> orderItemDTOList = orderMapper.searchShopOrderByStatus(shopId, status);
+    public OrderVO searchShopOrderByStatus(Long userId, Integer status) {
+        QueryWrapper<Shop> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Shop::getUserId,userId).eq(Shop::getOffline,0);
+        Shop shop = shopService.getOne(wrapper);
+        List<OrderItemDTO> orderItemDTOList = orderMapper.searchShopOrderByStatus(shop.getId(), status);
+        if(status == 5){
+            List<OrderItemDTO> orderItemDTOList6 = orderMapper.searchShopOrderByStatus(shop.getId(), 6);
+            orderItemDTOList.addAll(orderItemDTOList6);
+        }
         return encapsulateData(orderItemDTOList);
     }
 

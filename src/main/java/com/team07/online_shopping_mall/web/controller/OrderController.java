@@ -1,5 +1,6 @@
 package com.team07.online_shopping_mall.web.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.vo.OrderVO;
@@ -30,6 +31,28 @@ public class OrderController {
     private OrderService orderService;
 
     /**
+     * 描述:管理员查找所有订单
+     * @Author: xy
+     */
+    @RequestMapping(value = "/searchAllOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse searchAllOrder() throws Exception {
+        OrderVO orderVO = orderService.searchAllOrder();
+        return ApiRestResponse.success(orderVO);
+    }
+
+    /**
+     * 描述:管理员根据状态查找订单
+     * @Author: xy
+     */
+    @RequestMapping(value = "/searchOrderByStatus", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse searchOrderByStatus(@RequestParam Integer status) throws Exception {
+        OrderVO orderVO = orderService.searchOrderByStatus(status);
+        return ApiRestResponse.success(orderVO);
+    }
+
+    /**
      * 描述:查找用户所有订单
      * @Author: xy
      */
@@ -46,8 +69,8 @@ public class OrderController {
      */
     @RequestMapping(value = "/searchShopAllOrder", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse searchShopAllOrder(@RequestParam Long shopId) throws Exception {
-        OrderVO orderVO = orderService.searchShopAllOrder(shopId);
+    public ApiRestResponse searchShopAllOrder(@RequestParam Long userId) throws Exception {
+        OrderVO orderVO = orderService.searchShopAllOrder(userId);
         return ApiRestResponse.success(orderVO);
     }
 
@@ -68,8 +91,8 @@ public class OrderController {
      */
     @RequestMapping(value = "/searchShopOrderByStatus", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse searchShopOrderByStatus(@RequestParam Long shopId, @RequestParam Integer status) throws Exception {
-        OrderVO orderVO = orderService.searchShopOrderByStatus(shopId, status);
+    public ApiRestResponse searchShopOrderByStatus(@RequestParam Long userId, @RequestParam Integer status) throws Exception {
+        OrderVO orderVO = orderService.searchShopOrderByStatus(userId, status);
         return ApiRestResponse.success(orderVO);
     }
 
@@ -100,7 +123,7 @@ public class OrderController {
     }
 
     /**
-     * 描述: 买家更改订单状态
+     * 描述: 买家申请退款
      * @Author: xy
      */
     @RequestMapping(value = "/buyerRefund", method = RequestMethod.POST)

@@ -18,9 +18,9 @@ public interface OrderService extends IService<Order> {
 
     OrderVO searchUserOrderByStatus(Long userId, Integer status);
 
-    OrderVO searchShopAllOrder(Long shopId);
+    OrderVO searchShopAllOrder(Long userId);
 
-    OrderVO searchShopOrderByStatus(Long shopId, Integer status);
+    OrderVO searchShopOrderByStatus(Long userId, Integer status);
 
     boolean buyerChangeOrderStatus(Long orderId);
 
@@ -31,4 +31,8 @@ public interface OrderService extends IService<Order> {
     boolean sellerAgreeRefund(Long orderId);
 
     boolean sellerRefuseRefund(Long orderId);
+
+    OrderVO searchAllOrder();
+
+    OrderVO searchOrderByStatus(Integer status);
 }
