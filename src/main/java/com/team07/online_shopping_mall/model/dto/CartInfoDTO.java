@@ -13,4 +13,5 @@ public class CartInfoDTO {
     private String productImg;
     private Integer price;
     private Integer quantity;
+    private boolean selected;
 }

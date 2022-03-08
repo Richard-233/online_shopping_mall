@@ -22,14 +22,13 @@
     update_time
     </sql>
     <select id="getByName" resultMap="BaseResultMap">
-        select distinct id,
+        select distinct id,name,
                         shop_id,
-                        `name`,
                         image,
                         detail,
                         catalog_id,
-                        price,
-                        `status`
+                        price,stock,
+                        status,create_time,update_time
         from mall_product
         where name like concat('%', #{name}, '%')
           and mall_product.status &gt; 0
@@ -80,7 +79,7 @@
         where shop_id in (select id from mall_shop where user_id=#{userId})
         order by mall_product.update_time desc
     </select>
-    <select id="selectList" resultMap="BaseResultMap"
+    <select id="selectMyList" resultMap="BaseResultMap"
             parameterType="com.team07.online_shopping_mall.model.query.ProductListQuery">
         select
         <include refid="Base_Column_List"/>

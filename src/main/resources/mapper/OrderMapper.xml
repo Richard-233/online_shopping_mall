@@ -30,7 +30,7 @@
         from mall_order_item oi left join mall_order o on oi.order_id = o.id
                                 left join mall_product p on oi.product_id = p.id
                                 left join mall_shop s on p.shop_id = s.id
-        where o.user_id = #{userId}
+        where o.user_id = #{userId} order by orderStatus
     </select>
     <select id="searchUserOrderByStatus" resultType="com.team07.online_shopping_mall.model.dto.OrderItemDTO">
         select oi.id as orderItemId, oi.product_id as productId, oi.order_id as orderId,
@@ -54,7 +54,7 @@
         from mall_order_item oi left join mall_order o on oi.order_id = o.id
                                 left join mall_product p on oi.product_id = p.id
                                 left join mall_shop s on p.shop_id = s.id
-        where o.shop_id = #{shopId}
+        where o.shop_id = #{shopId} order by orderStatus
     </select>
     <select id="searchShopOrderByStatus" resultType="com.team07.online_shopping_mall.model.dto.OrderItemDTO">
         select oi.id as orderItemId, oi.product_id as productId, oi.order_id as orderId,
@@ -67,6 +67,30 @@
                                 left join mall_product p on oi.product_id = p.id
                                 left join mall_shop s on p.shop_id = s.id
         where o.shop_id = #{shopId} and o.order_status = #{status}
+    </select>
+    <select id="searchAllOrder" resultType="com.team07.online_shopping_mall.model.dto.OrderItemDTO">
+        select oi.id as orderItemId, oi.product_id as productId, oi.order_id as orderId,
+               o.user_id as userId, s.id as shopId, oi.product_name as productName, oi.product_img as productImg,
+               oi.unit_price as unitPrice, oi.quantity, oi.total_price as itemTotalPrice,
+               s.`name` as shopName, o.postage as postage, o.total_price as orderTotalPrice,
+               o.receiver_name as receiverName, o.receiver_mobile as receiverMobile
+                , o.receiver_address as receiverAddress, o.order_status as orderStatus
+        from mall_order_item oi left join mall_order o on oi.order_id = o.id
+                                left join mall_product p on oi.product_id = p.id
+                                left join mall_shop s on p.shop_id = s.id
+        order by orderStatus
+    </select>
+    <select id="searchOrderByStatus" resultType="com.team07.online_shopping_mall.model.dto.OrderItemDTO">
+        select oi.id as orderItemId, oi.product_id as productId, oi.order_id as orderId,
+               o.user_id as userId, s.id as shopId, oi.product_name as productName, oi.product_img as productImg,
+               oi.unit_price as unitPrice, oi.quantity, oi.total_price as itemTotalPrice,
+               s.`name` as shopName, o.postage as postage, o.total_price as orderTotalPrice,
+               o.receiver_name as receiverName, o.receiver_mobile as receiverMobile
+                , o.receiver_address as receiverAddress, o.order_status as orderStatus
+        from mall_order_item oi left join mall_order o on oi.order_id = o.id
+                                left join mall_product p on oi.product_id = p.id
+                                left join mall_shop s on p.shop_id = s.id
+        where o.order_status = #{status}
     </select>
 
 </mapper>

@@ -1,12 +1,17 @@
 package com.team07.online_shopping_mall.web.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
+import com.team07.online_shopping_mall.common.utls.SecurityUtils;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
+import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.domain.User;
+import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
 import com.team07.online_shopping_mall.model.query.ProductListQuery;
 import com.team07.online_shopping_mall.model.request.ProductListReq;
 import com.team07.online_shopping_mall.service.ShopService;
@@ -27,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,15 +66,14 @@ public class ProductController {
     * 描述：普通用户根据Id 查询111
     *
     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/id", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse getById(@PathVariable("id") Long id)throws Exception {
+    public ApiRestResponse getById(@RequestParam Long id)throws Exception {
         Product product = productService.getById(id);
+        List<Product> list=new ArrayList<>();
+        list.add(product);
         if (product.getStatus() != 0) {
-            product.setStock(null);
-            product.setCreateTime(null);
-            product.setUpdateTime(null);
-            return ApiRestResponse.success(product);
+            return ApiRestResponse.success(list);
         } else
             return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
@@ -76,9 +82,9 @@ public class ProductController {
      * 描述：管理员根据Id 查询111
      *
      */
-    @RequestMapping(value = "/admin/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/id", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse getByIdSuper(@PathVariable("id") Long id)throws Exception {
+    public ApiRestResponse getByIdSuper(@RequestParam Long id)throws Exception {
         Product  product =  productService.getById(id);
             return ApiRestResponse.success(product);
     }
@@ -89,10 +95,14 @@ public class ProductController {
      * 描述：普通用户根据product_name 查询所有,但是下架的无法查询111
      *
      */
-    @RequestMapping(value = "/name")
+    @GetMapping(value = "/name")
     @ResponseBody
-    public ApiRestResponse getByName(@RequestParam String name)throws Exception {
+    public ApiRestResponse getByName(/*@RequestParam Integer pageNum, @RequestParam Integer pageSize,*/@RequestParam String name)throws Exception {
         List<Product> lists=productMapper.getByName(name);
+        //System.out.println(name);
+        //PageHelper.startPage(pageNum, pageSize);
+        //PageInfo pageInfo = new PageInfo(lists);
+        //System.out.println(pageInfo);
         if(lists.size()>0)
             return ApiRestResponse.success(lists);
         else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
@@ -119,12 +129,32 @@ public class ProductController {
      * 描述：更新（如果是管理员，那么就允许更新所有字段；如果是普通人，那么只允许更新部分字段，且只允许更新自己商铺里的商品）111
      *  对于普通人，前端只提供部分字段的接口就是，后端就调这个接口
      */
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse updateProduct(@RequestBody Product  product,HttpSession session/*,@RequestParam("userid") Long userId*/) throws Exception {
+    public ApiRestResponse updateProduct
+    (Product  product,HttpSession session) throws Exception {
+//    (@RequestParam Long id, @RequestParam String name,@RequestParam  Long shopId,
+//     @RequestParam String image, @RequestParam String detail, @RequestParam Long catalogId,
+//     @RequestParam Integer price,@RequestParam Integer stock, @RequestParam Integer status,
+//     @RequestParam LocalDateTime createTime,@RequestParam LocalDateTime updateTime
+//    )throws Exception {
+        //User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+//        if((productService.identifyUser(currentUser.getId(),productService.getById(product.getId()).getShopId())
+//                &&productService.getById(product.getId()).getShopId().equals(product.getShopId()))
+//                ||currentUser.getRole().equals(2)){
+        //System.out.println(1111);
+//        System.out.println(id);
+//        Product product=new Product();
+//        product.setId(id);
+//        product.setShopId(shopId);
+        //System.out.println(product);
+
+
+
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
-        //if(productService.identifyUser(userId,product.getShopId())){
-        if((productService.identifyUser(currentUser.getId(),productService.getById(product.getId()).getShopId())
+        if((currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())
                 &&productService.getById(product.getId()).getShopId().equals(product.getShopId()))
                 ||currentUser.getRole().equals(2)){
             productService.updateById(product);
@@ -138,15 +168,15 @@ public class ProductController {
      * 描述：普通人根据Id删除（逻辑删除）111
      *
      */
-    @RequestMapping(value = "/delete", method = RequestMethod.PUT)
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse deleteByIdLogic(/*@RequestParam("userid") Long userId,*/@RequestParam("id") Long id,HttpSession session) throws Exception {
-        //if(productService.identifyUser(userId,productService.getById(id).getShopId())){
-        //if(productService.identifyUser(userId,productService.getById(id).getShopId())){
+    public ApiRestResponse deleteByIdLogic(@RequestParam Long id,HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
-        if(productService.identifyUser(currentUser.getId(),productService.getById(id).getShopId())||currentUser.getRole().equals(2)){
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+        if(currentUser.getId().equals(shopService.getById(productService.getById(id).getShopId()).getUserId())||currentUser.getRole().equals(2)){
+        //if(userInfo.getId().equals(shopService.getById(productService.getById(id).getShopId()).getUserId())||userInfo.getUserType().equals(2L)){
             Product product=productService.getById(id);
-            //productService.removeById(id);
             product.setStatus(0);
             productService.updateById(product);
             return ApiRestResponse.success("删除成功");
@@ -174,12 +204,22 @@ public class ProductController {
      * 描述:普通人创建Product111
      *
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse create(@RequestBody  Product  product,HttpSession session) throws Exception {
+    public ApiRestResponse create(Product  product,HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        //if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        //调试用
+        QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>();
+        wrapper.eq("user_id",currentUser.getId()).eq("offline",0);
+        //System.out.println(1111);
+        Shop oneshop = shopService.getOne(wrapper);
+        product.setShopId(oneshop.getId());
         if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
             productService.save(product);
+            //System.out.println(2222);
             return ApiRestResponse.success(productService.getById(product.getId()));
         }
         else return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
@@ -240,24 +280,48 @@ public class ProductController {
         return ApiRestResponse.success(pageInfo);
     }
 
-    @PostMapping("/seller/product/list")
+    @GetMapping("/seller/product/list")
     @ResponseBody
     public ApiRestResponse sellerList(@RequestParam Integer pageNum, @RequestParam Integer pageSize, HttpSession session) {
+
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
+        //System.out.println(pageNum+"000"+pageSize);
+//        SecurityUtils securityUtils = new SecurityUtils();
+//        UserInfoDTO userInfo = securityUtils.getUserInfo();
+//        Long currentUserId = userInfo.getId();
         Long currentUserId = currentUser.getId();
         PageInfo pageInfo = productService.listForSeller(pageNum, pageSize, currentUserId);
+        //System.out.println(pageInfo);
         return ApiRestResponse.success(pageInfo);
     }
 
-    @GetMapping("/list")
+    /**
+     * 描述：普通人查询所有（按time从高到低排列）111
+     *
+     */
+    @RequestMapping(value = "/selectall", method = RequestMethod.GET)
     @ResponseBody
-    public ApiRestResponse list(ProductListReq productListReq) {
-        PageInfo list = productService.list(productListReq);
-        return ApiRestResponse.success(list);
+    public ApiRestResponse getAll()throws Exception {
+        QueryWrapper<Product> wrapper=new QueryWrapper<Product>().gt("status",0).
+                orderByDesc("create_time");
+        List<Product> products=productService.list(wrapper);
+        if(products.size()>0){
+            return ApiRestResponse.success(products);
+        }
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
+
+
+
+//    @GetMapping("/list")
+//    @ResponseBody
+//    public ApiRestResponse list(ProductListReq productListReq) {
+//        PageInfo list = productService.list(productListReq);
+//        return ApiRestResponse.success(list);
+//    }
 
 
     @PostMapping("/upload/file")

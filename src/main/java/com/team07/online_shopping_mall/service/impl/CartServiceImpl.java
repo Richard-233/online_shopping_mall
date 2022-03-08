@@ -1,11 +1,8 @@
 package com.team07.online_shopping_mall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.team07.online_shopping_mall.mapper.OrderItemMapper;
-import com.team07.online_shopping_mall.mapper.OrderMapper;
-import com.team07.online_shopping_mall.mapper.ProductMapper;
+import com.team07.online_shopping_mall.mapper.*;
 import com.team07.online_shopping_mall.model.domain.Cart;
-import com.team07.online_shopping_mall.mapper.CartMapper;
 import com.team07.online_shopping_mall.model.domain.Order;
 import com.team07.online_shopping_mall.model.domain.OrderItem;
 import com.team07.online_shopping_mall.model.domain.Product;
@@ -44,6 +41,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     @Autowired
     OrderItemMapper orderItemMapper;
 
+    @Autowired
+    ShopMapper shopMapper;
+
     @Override
     public CartVO searchCart(Long userId){
         List<CartInfoDTO> cartInfoDTOList = cartMapper.searchCart(userId);
@@ -65,6 +65,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             List<CartInfoDTO> cartList = cartInfoMap.get(key);
             CartInfoVO cartInfoVO = new CartInfoVO();
             cartInfoVO.setShopId(key);
+            cartInfoVO.setShopName(cartInfoMap.get(key).get(0).getShopName());
             cartInfoVO.setShopCartInfoList(cartList);
             cartInfoVOList.add(cartInfoVO);
         }
