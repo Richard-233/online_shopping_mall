@@ -9,6 +9,7 @@ import com.team07.online_shopping_mall.common.utls.SecurityUtils;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.ProductMapper;
+import com.team07.online_shopping_mall.model.domain.NewProduct;
 import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.domain.User;
 import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
@@ -70,9 +71,22 @@ public class ProductController {
     @ResponseBody
     public ApiRestResponse getById(@RequestParam Long id)throws Exception {
         Product product = productService.getById(id);
-        List<Product> list=new ArrayList<>();
-        list.add(product);
-        if (product.getStatus() != 0) {
+        List<NewProduct> list=new ArrayList<>();
+        NewProduct np=new NewProduct();
+        np.setId(product.getId());
+        np.setName(product.getName());
+        np.setShopId(product.getShopId());
+        np.setShopName(shopService.getById(product.getShopId()).getName());
+        np.setCatalogId(product.getCatalogId());
+        np.setImage(product.getImage());
+        np.setDetail(product.getDetail());
+        np.setPrice(product.getPrice());
+        np.setStock(product.getStock());
+        np.setStatus(product.getStatus());
+        np.setCreateTime(product.getCreateTime());
+        np.setUpdateTime(product.getUpdateTime());
+        list.add(np);
+        if (np.getStatus() != 0) {
             return ApiRestResponse.success(list);
         } else
             return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
