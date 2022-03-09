@@ -10,6 +10,7 @@ import com.team07.online_shopping_mall.mapper.ShopMapper;
 import com.team07.online_shopping_mall.model.domain.Product;
 import com.team07.online_shopping_mall.model.domain.User;
 import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
+import com.team07.online_shopping_mall.service.ProductService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import com.team07.online_shopping_mall.model.domain.Shop;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Wrapper;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -44,6 +46,9 @@ public class ShopController {
     private ShopService shopService;
     @Autowired
     private ShopMapper shopMapper;
+    @Autowired
+    private ProductService productService;
+
 
     /**
      * 描述：普通人根据Id 查询111
@@ -208,11 +213,20 @@ public class ShopController {
         Long currentUserId =currentUser.getId();
         //System.out.println(id);
         if(shopService.identifyUser(currentUserId,shopService.getById(id).getUserId())||currentUser.getRole().equals(2)){
-//        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        //User currentUser = (User) session.getAttribute(Constant.MALL_USER);
 //        if(shopService.identifyUser(currentUser.getId(),shopService.getById(id).getUserId())||currentUser.getRole().equals(2)){
             Shop shop=shopService.getById(id);
             shop.setOffline(1);
             shopService.updateById(shop);
+            List<Product> products=new ArrayList<>();
+            QueryWrapper<Product> wrapper=new QueryWrapper<Product>();
+            wrapper.eq("shop_id",id);
+            products=productService.list(wrapper);
+            for(int i=0;i<products.size();i++){
+                products.get(i).setStatus(0);
+            }
+            //System.out.println(products);
+            productService.updateBatchById(products);
             return ApiRestResponse.success("删除成功");
         }
         return ApiRestResponse.error(MallExceptionEnum.DELETE_FAILED);
