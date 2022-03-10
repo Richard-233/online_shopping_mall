@@ -11,5 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartVO {
+    private boolean selectedAll;
+    private Integer cartTotalPrice;
+    private Integer cartTotalQuantity;
+    private Integer cartSelectedTotalQuantity;
     private List<CartInfoVO> cartInfoList;
 }

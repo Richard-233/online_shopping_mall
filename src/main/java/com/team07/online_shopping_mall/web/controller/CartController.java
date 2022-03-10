@@ -84,14 +84,14 @@ public class CartController {
 
     /**
      * 描述:在购物车中增加商品数量
-     * 参数：Cart cart(含id，productId,quantity)
+     * 参数：Cart cart(含id，productId,quantity,selected)
      * @Author: xy
      * @Return: 成功/失败信息
      */
     @RequestMapping(value = "/addCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse addCartProducts(@RequestBody Cart cart) throws Exception{
-        System.out.println(cart);
+//        System.out.println(cart);
         if(cartService.addCartProduct(cart)){
             return ApiRestResponse.success();
         }
@@ -102,19 +102,117 @@ public class CartController {
 
     /**
      * 描述:在购物车中减少商品数量/删除商品
-     * 参数：Cart cart(含id，productId,quantity)
+     * 参数：Cart cart(含id，productId,quantity,selected)
      * @Author: xy
      * @Return: 成功/失败信息
      */
     @RequestMapping(value = "/subCartProducts", method = RequestMethod.POST)
     @ResponseBody
     public ApiRestResponse subCartProducts(@RequestBody Cart cart) throws Exception {
-        System.out.println(cart);
+//        System.out.println(cart);
         if (cartService.subCartProduct(cart)) {
             return ApiRestResponse.success();
         } else {
             return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
         }
+    }
+
+    /**
+     * 描述:在购物车中选择商品
+     * 参数：Cart cart(含id，productId,quantity,selected)
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping(value = "/selectCartProducts", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiRestResponse selectCartProducts(@RequestBody Cart cart) throws Exception {
+//        System.out.println(cart);
+        if (cartService.selectCartProduct(cart)) {
+            return ApiRestResponse.success();
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    /**
+     * 描述:购物车全选
+     * 参数：Long userId
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping(value = "/selectAll", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse selectAll(@RequestParam Long userId) throws Exception {
+//        System.out.println(cart);
+        if (cartService.selectAll(userId)) {
+            return ApiRestResponse.success();
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    /**
+     * 描述:购物车全不选
+     * 参数：Long userId
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping(value = "/unSelectAll", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse unSelectAll(@RequestParam Long userId) throws Exception {
+//        System.out.println(cart);
+        if (cartService.unSelectAll(userId)) {
+            return ApiRestResponse.success();
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    /**
+     * 描述:购物车商铺全选
+     * 参数：Long userId
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping(value = "/selectShopAll", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse selectShopAll(@RequestParam Long userId, @RequestParam Long shopId) throws Exception {
+//        System.out.println(cart);
+        if (cartService.selectShopAll(userId,shopId)) {
+            return ApiRestResponse.success();
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    /**
+     * 描述:购物车商铺全不选
+     * 参数：Long userId
+     * @Author: xy
+     * @Return: 成功/失败信息
+     */
+    @RequestMapping(value = "/unSelectShopAll", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse unSelectShopAll(@RequestParam Long userId, @RequestParam Long shopId) throws Exception {
+//        System.out.println(cart);
+        if (cartService.unSelectShopAll(userId,shopId)) {
+            return ApiRestResponse.success();
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    /**
+     * 描述: 获取购物车商品
+     * 参数：Long userId
+     * @Author: xy
+     * @Return: cartVO
+     */
+    @RequestMapping(value = "/searchOrderConfirm", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse searchOrderConfirm(@RequestParam Long userId) throws Exception{
+        CartVO cartVO = cartService.searchOrderConfirm(userId);
+        return ApiRestResponse.success(cartVO);
     }
 
     /**

@@ -29,5 +29,11 @@
                          left join mall_shop s on p.shop_id = s.id
         where c.user_id = #{userId}
     </select>
+    <select id="selectByShopId" resultType="com.team07.online_shopping_mall.model.domain.Cart">
+        select c.id,c.user_id,c.product_id,c.quantity,c.update_time
+        from mall_cart c left join mall_product p on c.product_id = p.id
+                         left join mall_shop s on p.shop_id = s.id
+        where c.user_id=#{userId} and s.id = #{shopId}
+    </select>
 
 </mapper>
