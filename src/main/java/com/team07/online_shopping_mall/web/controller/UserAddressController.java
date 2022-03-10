@@ -80,6 +80,25 @@ public class UserAddressController {
     }
 
     /**
+     * 描述：根据UserId查询
+     *
+     */
+    @GetMapping("/getByUserId")
+    @ResponseBody
+    public ApiRestResponse getByUserId(HttpSession session)throws MallException{
+        QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
+        User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
+        }
+        wrapper.eq("user_id",currentUser.getId());
+        List<UserAddress> list= userAddressService.list(wrapper);
+        if (list.size()>0)
+            return ApiRestResponse.success(list);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+    /**
      * 描述：查询所有
      *
      */
@@ -137,12 +156,13 @@ public class UserAddressController {
         userAddress.setUserId(userAddressService.getById(id).getUserId());
         userAddress.setStatus(userAddressService.getById(id).getStatus());
         System.out.println(userAddress);
-        QueryWrapper<UserAddress> wrapper=new QueryWrapper<UserAddress>();
-        wrapper.eq("id",id);
-        userAddressService.update(wrapper);
-//        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-//        userAddressUpdateWrapper.eq("id", id);
-//        userAddressMapper.update(userAddress, userAddressUpdateWrapper);
+//        QueryWrapper<UserAddress> wrapper= new QueryWrapper<UserAddress>();
+//        wrapper.eq("id",id);
+//        userAddressService.update(wrapper);
+
+        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
+        userAddressUpdateWrapper.eq("id", id);
+        userAddressMapper.update(userAddress, userAddressUpdateWrapper);
         return ApiRestResponse.success();
     }
 
