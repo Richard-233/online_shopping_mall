@@ -19,4 +19,6 @@ import java.util.List;
 public interface CartMapper extends BaseMapper<Cart> {
 
     List<CartInfoDTO> searchCart(Long userId);
+
+    List<Cart> selectByShopId(Long userId, Long shopId);
 }

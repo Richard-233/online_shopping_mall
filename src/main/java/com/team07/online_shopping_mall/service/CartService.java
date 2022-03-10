@@ -21,7 +21,6 @@ import java.util.Map;
  */
 public interface CartService extends IService<Cart> {
 
-
     boolean addCartProduct(Cart cart);
 
     boolean subCartProduct(Cart cart);
@@ -33,4 +32,16 @@ public interface CartService extends IService<Cart> {
     void createOrder(Map<Long, List<OrderItem>> orderItemMap, List<OrderInfoDTO> orderInfoDTOList);
 
     CartVO searchCart(Long userId);
+
+    boolean selectCartProduct(Cart cart);
+
+    boolean selectAll(Long userId);
+
+    boolean unSelectAll(Long userId);
+
+    boolean selectShopAll(Long userId, Long shopId);
+
+    boolean unSelectShopAll(Long userId, Long shopId);
+
+    CartVO searchOrderConfirm(Long userId);
 }

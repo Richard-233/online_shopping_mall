@@ -14,5 +14,6 @@ import java.util.List;
 public class CartInfoVO {
     private Long shopId;
     private String shopName;
+    private boolean shopSelectedAll;
     private List<CartInfoDTO> shopCartInfoList;
 }

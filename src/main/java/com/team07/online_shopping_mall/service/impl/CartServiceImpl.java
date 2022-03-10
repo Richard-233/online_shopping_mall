@@ -49,6 +49,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         List<CartInfoDTO> cartInfoDTOList = cartMapper.searchCart(userId);
         Map<Long, List<CartInfoDTO>> cartInfoMap = new HashMap<>();
         List<CartInfoVO> cartInfoVOList = new ArrayList<>();
+        Integer cartTotalPrice = 0;
+        Integer cartTotalQuantity = 0;
+        Integer cartSelectedTotalQuantity = 0;
         for(CartInfoDTO cartInfoDTO : cartInfoDTOList){
             Long shopId = cartInfoDTO.getShopId();
             List<CartInfoDTO> cartInfoList;
@@ -60,6 +63,11 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             }
             cartInfoList.add(cartInfoDTO);
             cartInfoMap.put(shopId,cartInfoList);
+            cartTotalQuantity = cartTotalQuantity + cartInfoDTO.getQuantity();
+            if(cartInfoDTO.isSelected()){
+                cartTotalPrice = cartTotalPrice + cartInfoDTO.getQuantity() * cartInfoDTO.getPrice();
+                cartSelectedTotalQuantity = cartSelectedTotalQuantity + cartInfoDTO.getQuantity();
+            }
         }
         for(Long key : cartInfoMap.keySet()){
             List<CartInfoDTO> cartList = cartInfoMap.get(key);
@@ -67,17 +75,100 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             cartInfoVO.setShopId(key);
             cartInfoVO.setShopName(cartInfoMap.get(key).get(0).getShopName());
             cartInfoVO.setShopCartInfoList(cartList);
+            boolean shopSelectedAll = true;
+            for(CartInfoDTO cartInfoDTO : cartList){
+                if(!cartInfoDTO.isSelected()){
+                    shopSelectedAll = false;
+                }
+            }
+            cartInfoVO.setShopSelectedAll(shopSelectedAll);
             cartInfoVOList.add(cartInfoVO);
         }
         CartVO cartVO = new CartVO();
         cartVO.setCartInfoList(cartInfoVOList);
+        boolean selectAll = true;
+        for(CartInfoVO cartInfoVO : cartInfoVOList){
+            if(!cartInfoVO.isShopSelectedAll()){
+                selectAll = false;
+            }
+        }
+        cartVO.setSelectedAll(selectAll);
+        cartVO.setCartTotalPrice(cartTotalPrice);
+        cartVO.setCartTotalQuantity(cartTotalQuantity);
+        cartVO.setCartSelectedTotalQuantity(cartSelectedTotalQuantity);
         return cartVO;
+    }
+
+    @Override
+    public boolean selectCartProduct(Cart cart) {
+        Cart oldCart = cartMapper.selectById(cart.getId());
+        if(!(oldCart.getQuantity().equals(cart.getQuantity()) && oldCart.getProductId().equals(cart.getProductId()) && oldCart.isSelected() == cart.isSelected())){
+            return false;
+        }
+        cart.setSelected(!cart.isSelected());
+        return cartMapper.updateById(cart) == 1;
+    }
+
+    @Override
+    public boolean selectAll(Long userId) {
+        QueryWrapper<Cart> wrapper = new QueryWrapper();
+        wrapper.lambda().eq(Cart::getUserId,userId);
+        List<Cart> cartList = cartMapper.selectList(wrapper);
+        if(cartList.size()>0){
+            for(Cart cart : cartList){
+                cart.setSelected(true);
+                cartMapper.updateById(cart);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unSelectAll(Long userId) {
+        QueryWrapper<Cart> wrapper = new QueryWrapper();
+        wrapper.lambda().eq(Cart::getUserId,userId);
+        List<Cart> cartList = cartMapper.selectList(wrapper);
+        if(cartList.size()>0){
+            for(Cart cart : cartList){
+                cart.setSelected(false);
+                cartMapper.updateById(cart);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean selectShopAll(Long userId, Long shopId) {
+        List<Cart> cartList = cartMapper.selectByShopId(userId,shopId);
+        if(cartList.size()>0){
+            for(Cart cart : cartList){
+                cart.setSelected(true);
+                cartMapper.updateById(cart);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unSelectShopAll(Long userId, Long shopId) {
+        List<Cart> cartList = cartMapper.selectByShopId(userId,shopId);
+        if(cartList.size()>0){
+            for(Cart cart : cartList){
+                cart.setSelected(false);
+                cartMapper.updateById(cart);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean addCartProduct(Cart cart){
         Cart oldCart = cartMapper.selectById(cart.getId());
-        if(!(oldCart.getQuantity().equals(cart.getQuantity()) && oldCart.getProductId().equals(cart.getProductId()))){
+        if(!(oldCart.getQuantity().equals(cart.getQuantity()) && oldCart.getProductId().equals(cart.getProductId())&& oldCart.isSelected() == cart.isSelected())){
             return false;
         }
         cart.setQuantity(cart.getQuantity() + 1);
@@ -87,7 +178,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     @Override
     public boolean subCartProduct(Cart cart){
         Cart oldCart = cartMapper.selectById(cart.getId());
-        if(!(oldCart.getQuantity().equals(cart.getQuantity()) && oldCart.getProductId().equals(cart.getProductId()))){
+        if(!(oldCart.getQuantity().equals(cart.getQuantity()) && oldCart.getProductId().equals(cart.getProductId())&& oldCart.isSelected() == cart.isSelected())){
             return false;
         }
         if(cart.getQuantity() - 1 == 0){
@@ -135,6 +226,44 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             orderItemMap.put(shopId,orderItemList);
         }
         return orderItemMap;
+    }
+
+    @Override
+    public CartVO searchOrderConfirm(Long userId) {
+        List<CartInfoDTO> cartInfoDTOList = cartMapper.searchCart(userId);
+        Map<Long, List<CartInfoDTO>> cartInfoMap = new HashMap<>();
+        List<CartInfoVO> cartInfoVOList = new ArrayList<>();
+        Integer cartTotalPrice = 0;
+        Integer cartSelectedTotalQuantity = 0;
+        for(CartInfoDTO cartInfoDTO : cartInfoDTOList){
+            if(cartInfoDTO.isSelected()){
+                Long shopId = cartInfoDTO.getShopId();
+                List<CartInfoDTO> cartInfoList;
+                if(cartInfoMap.containsKey(shopId)){
+                    cartInfoList = cartInfoMap.get(shopId);
+                }
+                else {
+                    cartInfoList = new ArrayList<>();
+                }
+                cartInfoList.add(cartInfoDTO);
+                cartInfoMap.put(shopId,cartInfoList);
+                cartTotalPrice = cartTotalPrice + cartInfoDTO.getQuantity() * cartInfoDTO.getPrice();
+                cartSelectedTotalQuantity = cartSelectedTotalQuantity + cartInfoDTO.getQuantity();
+            }
+        }
+        for(Long key : cartInfoMap.keySet()){
+            List<CartInfoDTO> cartList = cartInfoMap.get(key);
+            CartInfoVO cartInfoVO = new CartInfoVO();
+            cartInfoVO.setShopId(key);
+            cartInfoVO.setShopName(cartInfoMap.get(key).get(0).getShopName());
+            cartInfoVO.setShopCartInfoList(cartList);
+            cartInfoVOList.add(cartInfoVO);
+        }
+        CartVO cartVO = new CartVO();
+        cartVO.setCartInfoList(cartInfoVOList);
+        cartVO.setCartTotalPrice(cartTotalPrice);
+        cartVO.setCartSelectedTotalQuantity(cartSelectedTotalQuantity);
+        return cartVO;
     }
 
     @Override
