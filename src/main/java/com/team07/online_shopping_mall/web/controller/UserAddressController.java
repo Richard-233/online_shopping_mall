@@ -8,7 +8,9 @@ import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.mapper.UserAddressMapper;
+import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.domain.User;
+import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.service.UserAddressService;
 import com.team07.online_shopping_mall.model.domain.UserAddress;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.sql.Wrapper;
@@ -69,7 +72,7 @@ public class UserAddressController {
     * 描述：根据Id查询
     *
     */
-    @GetMapping("getId/{id}")
+    @GetMapping("/getId/{id}")
     @ResponseBody
     public ApiRestResponse getById(@PathVariable("id")Long id)throws MallException{
         UserAddress userAddress = userAddressService.getById(id);
@@ -77,14 +80,39 @@ public class UserAddressController {
     }
 
     /**
-    * 描述：根据Id删除
+     * 描述：查询所有
+     *
+     */
+    @RequestMapping(value = "/getAddress", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiRestResponse getAllSuper()throws MallException{
+        QueryWrapper<UserAddress> wrapper=new QueryWrapper<>();
+        List<UserAddress> userAddresses=userAddressService.list(wrapper);
+        if(userAddresses.size()>0)
+            return ApiRestResponse.success(userAddresses);
+        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+    }
+
+    /**
+    * 描述：根据Id删除(用户)
     *
     */
-    @DeleteMapping("delete/{userId}")
+    @DeleteMapping("/user/delete/{userId}")
     @ResponseBody
-    public ApiRestResponse deleteById(@PathVariable("userId") Long userId,Long id) throws MallException {
+    public ApiRestResponse deleteById(@PathVariable("userId") Long userId, Long id, HttpServletResponse response) throws MallException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id",userId);
+        userAddressService.removeById(id);
+        return ApiRestResponse.success();
+    }
+    /**
+     * 描述：根据Id删除(管理员)
+     *
+     */
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ApiRestResponse deleteById(@PathVariable("id")Long id) throws MallException {
         userAddressService.removeById(id);
         return ApiRestResponse.success();
     }
@@ -94,17 +122,27 @@ public class UserAddressController {
     * 描述：修改UserAddress
     *
     */
-    @PostMapping("/updateUserAddress/{id}")
+    @GetMapping("/updateUserAddress")
     @ResponseBody
-    public ApiRestResponse updateUserAddress(@PathVariable("id") Long id,@RequestParam("receiverAddress") String address,@RequestParam("receiverName") String name,@RequestParam("receiverMobile") String mobile) throws MallException {
+    public ApiRestResponse updateUserAddress(Long id, String address, String name, String mobile) throws MallException {
+        System.out.println(11111);
         UserAddress userAddress = new UserAddress();
+        userAddress.setId(id);
         userAddress.setReceiverAddress(address);
         userAddress.setReceiverName(name);
         userAddress.setReceiverMobile(mobile);
+        //System.out.println(userAddress);
 
-        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
-        userAddressUpdateWrapper.eq("id", id);
-        userAddressMapper.update(userAddress, userAddressUpdateWrapper);
+
+        userAddress.setUserId(userAddressService.getById(id).getUserId());
+        userAddress.setStatus(userAddressService.getById(id).getStatus());
+        System.out.println(userAddress);
+        QueryWrapper<UserAddress> wrapper=new QueryWrapper<UserAddress>();
+        wrapper.eq("id",id);
+        userAddressService.update(wrapper);
+//        UpdateWrapper<UserAddress> userAddressUpdateWrapper = new UpdateWrapper<>();
+//        userAddressUpdateWrapper.eq("id", id);
+//        userAddressMapper.update(userAddress, userAddressUpdateWrapper);
         return ApiRestResponse.success();
     }
 
