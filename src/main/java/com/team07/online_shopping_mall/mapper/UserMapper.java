@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -23,5 +25,7 @@ public interface UserMapper extends BaseMapper<User> {
     int updateByPrimaryKeySelective(User record);
 
     User selectLogin(@Param("userName") String userName, @Param("password") String password);
+
+    List<User> selectList();
 
 }

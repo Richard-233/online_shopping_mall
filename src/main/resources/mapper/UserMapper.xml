@@ -135,4 +135,10 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mall_user
+    </select>
+
 </mapper>
