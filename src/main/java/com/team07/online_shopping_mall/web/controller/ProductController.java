@@ -335,6 +335,16 @@ public class ProductController {
         return ApiRestResponse.success(list);
     }
 
+    @GetMapping("/selectByCatalog")
+    @ResponseBody
+    public ApiRestResponse sbc(Long id) {
+        QueryWrapper<Product> wrapper=new QueryWrapper<Product>();
+        wrapper.eq("catalog_id",id).gt("status",0);
+        List<Product> list=productService.list(wrapper);
+        return ApiRestResponse.success(list);
+    }
+
+
 
     @PostMapping("/upload/file")
     @ResponseBody
