@@ -40,4 +40,4 @@ file-upload-path: ./file
 
 file:
   upload:
-    dir: D:/online_shopping_mall/
+    dir: E:/online_shopping_mall/

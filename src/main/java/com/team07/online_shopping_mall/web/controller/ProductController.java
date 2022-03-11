@@ -226,11 +226,14 @@ public class ProductController {
 //        SecurityUtils securityUtils = new SecurityUtils();
 //        UserInfoDTO userInfo = securityUtils.getUserInfo();
 //        //调试用
+        //System.out.println(product);
         QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>();
         wrapper.eq("user_id",currentUser.getId()).eq("offline",0);
         //System.out.println(1111);
         Shop oneshop = shopService.getOne(wrapper);
         product.setShopId(oneshop.getId());
+//        System.out.println(111);
+//        System.out.println(product);
         if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
             productService.save(product);
             //System.out.println(2222);
@@ -307,9 +310,14 @@ public class ProductController {
 //        UserInfoDTO userInfo = securityUtils.getUserInfo();
 //        Long currentUserId = userInfo.getId();
         Long currentUserId = currentUser.getId();
-        PageInfo pageInfo = productService.listForSeller(pageNum, pageSize, currentUserId);
-        //System.out.println(pageInfo);
-        return ApiRestResponse.success(pageInfo);
+        QueryWrapper<Shop> wrapper=new QueryWrapper<>();
+        wrapper.eq("user_id",currentUserId).eq("offline",0);
+        if(shopService.count(wrapper)==1){
+            PageInfo pageInfo = productService.listForSeller(pageNum, pageSize, currentUserId);
+            //System.out.println(pageInfo);
+            return ApiRestResponse.success(pageInfo);
+        }
+        return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
 
     /**
