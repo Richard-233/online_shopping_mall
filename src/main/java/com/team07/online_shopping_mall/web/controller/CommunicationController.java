@@ -63,6 +63,7 @@ public class CommunicationController {
     @RequestMapping(value = "/selectmessages", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestResponse getMessages(Long receiverId, HttpSession session)throws Exception {
+        //System.out.println("smmm");
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         Long senderId=currentUser.getId();
 //        //调试用。。。
@@ -116,7 +117,7 @@ public class CommunicationController {
      * */
     @RequestMapping(value = "/beread", method = RequestMethod.GET)
     @ResponseBody
-    public void beread(Long receiverId,HttpSession session)throws Exception {
+    public ApiRestResponse<Object> beread(Long receiverId, HttpSession session)throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         Long senderId=currentUser.getId();
 //        //调试用。。。
@@ -132,6 +133,8 @@ public class CommunicationController {
             lists.get(i).setIsRead(1);
         }
         communicationService.updateBatchById(lists);
+        return ApiRestResponse.success();
+
     }
 
 
@@ -145,8 +148,10 @@ public class CommunicationController {
     @RequestMapping(value = "/windows", method = RequestMethod.GET)
     @ResponseBody
     public ApiRestResponse communicationWindows(HttpSession session)throws Exception {
+        //System.out.println(1111);
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         Long userId=currentUser.getId();
+        //System.out.println(userId);
 //        //调试用。。。
 //        SecurityUtils securityUtils = new SecurityUtils();
 //        UserInfoDTO userInfo = securityUtils.getUserInfo();
@@ -224,7 +229,7 @@ public class CommunicationController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     @ResponseBody
-    public void create(String messages,
+    public ApiRestResponse create(String messages,
                        Long receiverId,
                        HttpSession session) throws Exception {
 //        //调试用。。。
@@ -249,6 +254,7 @@ public class CommunicationController {
             communicationService.save(communication);
             //System.out.println(communication);
         }
+        return ApiRestResponse.success();
     }
 
 
