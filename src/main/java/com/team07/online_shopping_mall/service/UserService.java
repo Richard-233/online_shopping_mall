@@ -5,6 +5,8 @@ import com.team07.online_shopping_mall.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务类
@@ -24,4 +26,6 @@ public interface UserService extends IService<User> {
     boolean checkRole(User user);
 
     boolean checkAdminRole(User user);
+
+    List<User> userList();
 }

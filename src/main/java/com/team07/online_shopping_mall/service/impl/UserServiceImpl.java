@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * <p>
@@ -83,5 +84,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean checkAdminRole(User user) {
         //0-买家 1-卖家
         return user.getRole().equals(2);
+    }
+
+    @Override
+    public List<User> userList() {
+        return userMapper.selectList();
     }
 }
