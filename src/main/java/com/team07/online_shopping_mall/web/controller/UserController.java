@@ -93,9 +93,11 @@ public class UserController {
      * @return
      * @throws MallException
      */
-    @PostMapping("/updateInfo")
+    @GetMapping("/updateInfo")
     @ResponseBody
-    public ApiRestResponse updataUserInfo(@RequestParam("nickname") String userNickname, @RequestParam("image_url") String userImage, HttpSession session) throws MallException {
+    public ApiRestResponse updataUserInfo(String userNickname, String userImage, HttpSession session) throws MallException {
+        System.out.println(userNickname);
+        System.out.println(userImage);
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
