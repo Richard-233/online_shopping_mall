@@ -1,6 +1,7 @@
 package com.team07.online_shopping_mall.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
@@ -227,20 +228,37 @@ public class ProductController {
 //        UserInfoDTO userInfo = securityUtils.getUserInfo();
 //        //调试用
         //System.out.println(product);
+        //System.out.println(currentUser.getId());
         QueryWrapper<Shop> wrapper=new QueryWrapper<Shop>();
         wrapper.eq("user_id",currentUser.getId()).eq("offline",0);
         //System.out.println(1111);
         Shop oneshop = shopService.getOne(wrapper);
         product.setShopId(oneshop.getId());
-//        System.out.println(111);
-//        System.out.println(product);
+        //System.out.println(111);
+        //System.out.println(product);
         if(currentUser.getId().equals(shopService.getById(product.getShopId()).getUserId())||currentUser.getRole().equals(2)){
+            //System.out.println(999);
             productService.save(product);
-            //System.out.println(2222);
+            //System.out.println(product);
             return ApiRestResponse.success(productService.getById(product.getId()));
         }
         else return ApiRestResponse.error(MallExceptionEnum.ADD_FAILED);
     }
+
+
+    @GetMapping(value = "/admin/see")
+    @ResponseBody
+    public ApiRestResponse see(Integer pageNum,Integer pageSize,Long shopId) throws Exception {
+        QueryWrapper<Product> wrapper=new QueryWrapper<Product>();
+        wrapper.eq("shop_id",shopId).orderByDesc("status");
+
+        PageHelper.startPage(pageNum, pageSize);
+
+        PageInfo pageInfo = new PageInfo(productService.list(wrapper));
+        return ApiRestResponse.success(pageInfo);
+    }
+
+
 
 
     /**
@@ -360,11 +378,15 @@ public class ProductController {
             MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        System.out.println(fileName+"000"+suffixName);
         //生成文件名称UUID
         UUID uuid = UUID.randomUUID();
         String newFilename = uuid.toString() + suffixName;
+        System.out.println(newFilename);
         File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
+        System.out.println(fileDirectory);
         File destFile = new File(Constant.FILE_UPLOAD_DIR + newFilename);
+        System.out.println(destFile);
         if (!fileDirectory.exists()) {
             if (!fileDirectory.mkdir()) {
                 throw new MallException(MallExceptionEnum.MKDIR_FAILED);
@@ -376,6 +398,7 @@ public class ProductController {
             e.printStackTrace();
         }
         try {
+            System.out.println(getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFilename);
             return ApiRestResponse.success(getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFilename);
         } catch (URISyntaxException e) {
             return ApiRestResponse.error(MallExceptionEnum.UPLOAD_FAILED);
