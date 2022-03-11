@@ -124,28 +124,26 @@ public class UserController {
     /**
      * 卖家登录接口
      *
-     * @param userName
-     * @param password
-     * @param session
+     * @param
      * @return
      * @throws MallException
      */
     @PostMapping("/sellerLogin")
     @ResponseBody
-    public ApiRestResponse sellerLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
-        if (StringUtils.isEmpty(userName)) {
+    public ApiRestResponse sellerLogin(@RequestBody User user, HttpSession session) throws MallException {
+        if (StringUtils.isEmpty(user.getUsername())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
-        if (StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(user.getPassword())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
-        User user = userService.login(userName, password);
+        User user1 = userService.login(user.getUsername(), user.getPassword());
         //校验是否是卖家
-        if (userService.checkRole(user)) {
+        if (userService.checkRole(user1)) {
             //保存用户信息除了密码
             user.setPassword(null);
-            session.setAttribute(Constant.MALL_USER, user);
-            return ApiRestResponse.success(user);
+            session.setAttribute(Constant.MALL_USER, user1);
+            return ApiRestResponse.success(user1);
         } else {
             return ApiRestResponse.error(MallExceptionEnum.NEED_OPEN_SHOP);
         }
