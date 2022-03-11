@@ -5,7 +5,12 @@ spring:
     username: test
     password: Test1234
     hikari:
-      max-lifetime: 9
+      connection-timeout: 600000 #最大超时时间
+      maximum-pool-size: 500 #连接数
+      max-lifetime: 32000 #控制池中连接的最大生存期
+      minimum-idle: 20 #此属性控制 HikariCP尝试在池中维护的最小空闲连接数
+      validation-timeout: 3000 #此属性控制测试连接是否活跃的最长时间。此值必须小于 connectionTimeout
+      idle-timeout: 60000 #此属性控制允许连接在池中处于空闲状态的最长时间
   mvc:
     format:
       date: yyyy-MM-dd
