@@ -46,18 +46,6 @@ public class UserController {
     @ResponseBody
 //    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws MallException {
     public ApiRestResponse register(@RequestBody User user) throws MallException {
-//        if (StringUtils.isEmpty(userName)) {
-//            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
-//        }
-//        if (StringUtils.isEmpty(password)) {
-//            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
-//        }
-//        //密码长度不能少于8位
-//        if (password.length() < 8) {
-//            return ApiRestResponse.error(MallExceptionEnum.PASSWORD_TOO_SHORT);
-//        }
-//        userService.register(userName, password);
-//        return ApiRestResponse.success();
         if (StringUtils.isEmpty(user.getUsername())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
