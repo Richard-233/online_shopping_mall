@@ -277,6 +277,7 @@ public class ShopController {
     @ResponseBody
     public ApiRestResponse create(Shop  shop,HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute(Constant.MALL_USER);
+        shop.setUserId(currentUser.getId());
         if(currentUser.getId().equals(shop.getUserId())||currentUser.getRole().equals(2)){
 //        SecurityUtils securityUtils = new SecurityUtils();
 //        UserInfoDTO userInfo = securityUtils.getUserInfo();

@@ -76,10 +76,10 @@ public class CommunicationController {
             ->i.eq("sender_id",receiverId).eq("receiver_id",senderId)
         ).orderByDesc("create_time");
         List<Communication> communications=communicationService.list(wrapper);
-        if(communications.size()>0)
+        //if(communications.size()>0)
             return ApiRestResponse.success(communications);
         //否则返回什么呢
-        else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
+        //else return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);
     }
 
 
