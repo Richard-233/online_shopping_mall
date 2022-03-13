@@ -155,22 +155,20 @@ public class UserController {
     /**
      * 管理员登录接口
      *
-     * @param userName
-     * @param password
-     * @param session
+     * @param
      * @return
      * @throws MallException
      */
     @PostMapping("/adminLogin")
     @ResponseBody
-    public ApiRestResponse adminLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws MallException {
-        if (StringUtils.isEmpty(userName)) {
+    public ApiRestResponse adminLogin(@RequestBody User user1, HttpSession session) throws MallException {
+        if (StringUtils.isEmpty(user1.getUsername())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
-        if (StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(user1.getPassword())) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
         }
-        User user = userService.login(userName, password);
+        User user = userService.login(user1.getUsername(), user1.getPassword());
         //校验是否是卖家
         if (userService.checkAdminRole(user)) {
             //保存用户信息除了密码
