@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://sh-cynosdbmysql-grp-f9kr59fc.sql.tencentcdb.com:20328/online_shopping_mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-    username: test
-    password: Test1234
+    url: jdbc:mysql://rm-bp1l06y204m49pm98qo.mysql.rds.aliyuncs.com:3306/online_shopping_mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    username: user
+    password: User1234
     hikari:
       connection-timeout: 600000 #最大超时时间
       maximum-pool-size: 500 #连接数
