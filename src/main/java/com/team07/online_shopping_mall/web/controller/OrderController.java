@@ -38,7 +38,7 @@ public class OrderController {
     @ResponseBody
     public ApiRestResponse searchAllOrder() throws Exception {
         OrderVO orderVO = orderService.searchAllOrder();
-        System.out.println("test");
+        System.out.println("test1");
         return ApiRestResponse.success(orderVO);
     }
 
