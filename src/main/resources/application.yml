@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://sh-cynosdbmysql-grp-f9kr59fc.sql.tencentcdb.com:20328/online_shopping_mall?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-    username: test
-    password: Test1234
+    url: ENC(6t8cuFsP4IL07jRxjvYcY2zVO/Fh5LMWXMTbPh3RZnEFa7chDzTe/80anPfOAQfAOaTPr47dfEI2T5qRzzrruwROBzp+r6u7IfEC22I8oNx8e4XFsBhlqmoF4saxa5A8eohrsL2kOmyTX0hJdz5HskC2BqEddPsRYk907flVCPKZJmUoHr4jfyyMSLnTj1IZEQeZX67G2dz1gxTd6Oj/GeslJFsyQ33W35RkInUXdtf7iLjz8PvOZwoeOQNfjTQZ)
+    username: ENC(6A8KdGr8isuaib/qeKStgHxIqf7LFQYqSlx3kSJVcLRPzBckVAPwwjo+FgTyspOq)
+    password: ENC(AeVzWxViGUUWAH15gR3nsU8TV4cm377IZ63VX9UF26lDvajLdxC0YGM/u+qS5vCg)
     hikari:
       connection-timeout: 600000 #最大超时时间
       maximum-pool-size: 500 #连接数
@@ -19,9 +19,9 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
   redis:
-    host: 47.113.225.99
+    host: ENC(7ezzNNAIcUT5PsLR2T9sGrDUi9YV1xQYvLBou84hMoDzHt5aWS9CRvIV8BLvd0No)
     port: 6379
-    password: 123456
+    password: ENC(UQ6DirhVFB1iSs5ucqNcTpiTeKxQSVXFhrIGiP60G2HeEWYyjeIpSGCzDuLZP03l)
 #  resources:
 #    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${file-upload-path}
 server:

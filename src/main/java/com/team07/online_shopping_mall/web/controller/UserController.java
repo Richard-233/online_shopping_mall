@@ -2,12 +2,9 @@ package com.team07.online_shopping_mall.web.controller;
 
 import com.team07.online_shopping_mall.common.ApiRestResponse;
 import com.team07.online_shopping_mall.common.Constant;
-import com.team07.online_shopping_mall.common.JsonResponse;
-import com.team07.online_shopping_mall.common.utls.SecurityUtils;
 import com.team07.online_shopping_mall.exception.MallException;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.User;
-import com.team07.online_shopping_mall.model.dto.UserInfoDTO;
 import com.team07.online_shopping_mall.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -127,7 +124,8 @@ public class UserController {
     /**
      * 卖家登录接口
      *
-     * @param
+     * @param user
+     * @param session
      * @return
      * @throws MallException
      */
