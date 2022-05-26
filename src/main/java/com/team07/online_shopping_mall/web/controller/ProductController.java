@@ -318,16 +318,11 @@ public class ProductController {
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
-        //System.out.println(pageNum+"000"+pageSize);
-//        SecurityUtils securityUtils = new SecurityUtils();
-//        UserInfoDTO userInfo = securityUtils.getUserInfo();
-//        Long currentUserId = userInfo.getId();
         Long currentUserId = currentUser.getId();
         QueryWrapper<Shop> wrapper=new QueryWrapper<>();
         wrapper.eq("user_id",currentUserId).eq("offline",0);
         if(shopService.count(wrapper)==1){
             PageInfo pageInfo = productService.listForSeller(pageNum, pageSize, currentUserId);
-            //System.out.println(pageInfo);
             return ApiRestResponse.success(pageInfo);
         }
         return ApiRestResponse.error(MallExceptionEnum.SELECT_FAILED);

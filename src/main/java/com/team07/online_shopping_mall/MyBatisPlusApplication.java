@@ -11,10 +11,10 @@ import org.springframework.cache.annotation.EnableCaching;
 @SpringBootApplication
 @MapperScan({"com.team07.online_shopping_mall.mapper"})
 @EnableCaching
-public class MybatisplusApplication {
+public class MyBatisPlusApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MybatisplusApplication.class, args);
+        SpringApplication.run(MyBatisPlusApplication.class, args);
     }
 
 }
