@@ -212,4 +212,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderVO.setOrderList(orderItemVOList);
         return orderVO;
     }
+
+    @Override
+    public Integer scoreForOrder(Order order) {
+        return orderMapper.updateShopScore(order.getShopId(),order.getScore(),order.getId());
+    }
 }

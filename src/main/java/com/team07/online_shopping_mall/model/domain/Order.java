@@ -61,6 +61,9 @@ public class Order extends Model<Order> {
             @ApiModelProperty(value = "支付类型：1-支付宝")
     private Integer paymentType;
 
+            @ApiModelProperty(value = "订单评分")
+            private Integer score;
+
             @ApiModelProperty(value = "发货时间")
     private LocalDateTime deliveryTime;
 
