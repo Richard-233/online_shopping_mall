@@ -2,8 +2,11 @@ package com.team07.online_shopping_mall.web.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.team07.online_shopping_mall.common.ApiRestResponse;
+import com.team07.online_shopping_mall.common.Constant;
 import com.team07.online_shopping_mall.exception.MallExceptionEnum;
+import com.team07.online_shopping_mall.model.domain.Order;
 import com.team07.online_shopping_mall.model.vo.OrderVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -11,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.team07.online_shopping_mall.service.OrderService;
+
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -156,6 +161,23 @@ public class OrderController {
     @ResponseBody
     public ApiRestResponse sellerRefuseRefund(@RequestParam Long orderId) throws Exception {
         if(orderService.sellerRefuseRefund(orderId)){
+            return ApiRestResponse.success();
+        }
+        return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
+    }
+
+    /**
+     * 描述: 用户对订单进行评分
+     * @Author: ljz
+     */
+
+    @PostMapping("/buyerScore")
+    @ResponseBody
+    @ApiOperation(value = "对一个订单进行评分" ,notes="传入一整个订单实体类，将会更新该订单的评分，并且更新订单中商铺的评分，统计商铺评分时，只会计算status=4的订单")
+    public ApiRestResponse buyerScore(Order order, HttpSession session){
+        System.out.println(order);
+        if (order.getUserId()==session.getAttribute(Constant.MALL_USER)&&4==order.getOrderStatus()&& orderService.scoreForOrder(order)==2)
+        {
             return ApiRestResponse.success();
         }
         return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);

@@ -93,4 +93,10 @@
         where o.order_status = #{status}
     </select>
 
+    <update id="updateShopScore" parameterType="com.team07.online_shopping_mall.model.domain.Order">
+        UPDATE mall_order AS a,mall_shop AS d SET
+            a.score=#{score},
+            d.score=a.score+ #{score}/(SELECT * FROM (select count(*) from mall_order where shop_id = #{shopId} and order_status = 4) AS t)
+        WHERE a.id= #{shopId} AND d.id=#{orderId}
+    </update>
 </mapper>

@@ -35,4 +35,6 @@ public interface OrderService extends IService<Order> {
     OrderVO searchAllOrder();
 
     OrderVO searchOrderByStatus(Integer status);
+
+    Integer scoreForOrder(Order order);
 }

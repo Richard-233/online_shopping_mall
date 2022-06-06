@@ -30,4 +30,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     List<OrderItemDTO> searchAllOrder();
 
     List<OrderItemDTO> searchOrderByStatus(Integer status);
+
+    Integer updateShopScore(Long shopId,double score,Long orderId);
 }
