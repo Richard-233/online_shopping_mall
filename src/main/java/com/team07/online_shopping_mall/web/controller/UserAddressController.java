@@ -11,6 +11,7 @@ import com.team07.online_shopping_mall.mapper.UserAddressMapper;
 import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.domain.User;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.service.UserAddressService;
 import com.team07.online_shopping_mall.model.domain.UserAddress;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
@@ -113,7 +115,7 @@ public class UserAddressController {
     }
 
     /**
-    * 描述：根据Id删除(用户)
+    * 描述：根据Id删除(用户)，删除的请求方式为DELETE
     *
     */
     @DeleteMapping("/user/delete/{userId}")
@@ -126,7 +128,7 @@ public class UserAddressController {
         return ApiRestResponse.success();
     }
     /**
-     * 描述：根据Id删除(管理员)
+     * 描述：根据Id删除(管理员)，删除的请求方式为DELETE
      *
      */
     @DeleteMapping("/delete/{id}")
@@ -138,7 +140,7 @@ public class UserAddressController {
 
 
     /**
-    * 描述：修改UserAddress
+    * 描述：修改UserAddress,根据地址的id修改一个地址,感觉查询数据库太多次了
     *
     */
     @GetMapping("/updateUserAddress")
@@ -176,7 +178,10 @@ public class UserAddressController {
      */
     @PostMapping("/setDefaultAddress")
     @ResponseBody
-    public ApiRestResponse setDefaultUserAddress(Long userId, String address)throws MallException{
+    @ApiOperation(value = "设置一个默认的地址",notes = "传入那个默认的地址的id，如果已有默认地址会替换掉")
+    public ApiRestResponse setDefaultUserAddress(Long id, HttpServletRequest request)throws MallException{
+    //public ApiRestResponse setDefaultUserAddress(Long userId, String address)throws MallException{
+        /*   原来的代码我注释掉了，感觉逻辑不清楚是怎么回事，一句sql就写完的事。。
         QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
         wrapper.eq("status",4).eq("user_id",userId);
         List<UserAddress> list = userAddressService.list(wrapper);
@@ -196,13 +201,17 @@ public class UserAddressController {
         else {
             return ApiRestResponse.error(MallExceptionEnum.SET_DEFAULT_ADDRESS_FAILED);
         }
+        */
+      return userAddressService.setDefaultUserAddress(id,((User)request.getSession().getAttribute(Constant.MALL_USER)).getId());
+
+
     }
 
 
 
 
     /**
-     * 描述:设置UserAddress为家
+     * 描述:设置UserAddress为家,这里感觉直接传的是地址名称，虽然我感觉可能传地址的id好些，毕竟地址名称也许会重复
      *
      */
     @PostMapping("/setHomeAddress")
@@ -217,7 +226,7 @@ public class UserAddressController {
 
 
     /**
-     * 描述:设置UserAddress为学校
+     * 描述:设置UserAddress为学校，这里同理我觉得传id好些
      *
      */
     @PostMapping("/setSchoolAddress")
@@ -232,7 +241,7 @@ public class UserAddressController {
 
 
     /**
-     * 描述:设置UserAddress为公司
+     * 描述:设置UserAddress为公司，这里同理我觉得传id好些
      *
      */
     @PostMapping("/setCompanyAddress")

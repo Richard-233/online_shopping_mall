@@ -1,6 +1,8 @@
 package com.team07.online_shopping_mall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.team07.online_shopping_mall.common.ApiRestResponse;
+import com.team07.online_shopping_mall.exception.MallExceptionEnum;
 import com.team07.online_shopping_mall.model.domain.UserAddress;
 import com.team07.online_shopping_mall.mapper.UserAddressMapper;
 import com.team07.online_shopping_mall.service.UserAddressService;
@@ -34,5 +36,13 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         userAddress.setStatus(status);
         userAddressService.updateAddress(userAddress,address);
         return true;
+    }
+
+    @Override
+    public ApiRestResponse setDefaultUserAddress(Long id,Long userId) {
+        if (userAddressMapper.setDefaultUserAddress(id,userId)>=1)
+            return ApiRestResponse.success();
+        else
+            return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);
     }
 }

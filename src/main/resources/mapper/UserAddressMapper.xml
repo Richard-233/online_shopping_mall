@@ -11,6 +11,7 @@
         <result column="receiver_mobile" property="receiverMobile" />
         <result column="status" property="status" />
     </resultMap>
+    <!--
     <update id="updateByPrimaryKeySelective">
         update mall_user_address
         <set>
@@ -31,6 +32,12 @@
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
+    </update>
+-->
+    <update id="setDefaultUserAddress">
+        UPDATE mall_user_address AS a,mall_user_address AS b
+        SET a.`status`=4,b.`status`=IF(b.`status`=4,0,b.`status`)
+        WHERE a.id=#{id} AND b.id!=#{id} AND b.user_id=#{userId};
     </update>
 
 
