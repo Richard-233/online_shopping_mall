@@ -113,7 +113,7 @@ public class UserAddressController {
     }
 
     /**
-    * 描述：根据Id删除(用户)
+    * 描述：根据Id删除(用户)，删除的请求方式为DELETE
     *
     */
     @DeleteMapping("/user/delete/{userId}")
@@ -126,7 +126,7 @@ public class UserAddressController {
         return ApiRestResponse.success();
     }
     /**
-     * 描述：根据Id删除(管理员)
+     * 描述：根据Id删除(管理员)，删除的请求方式为DELETE
      *
      */
     @DeleteMapping("/delete/{id}")
@@ -138,7 +138,7 @@ public class UserAddressController {
 
 
     /**
-    * 描述：修改UserAddress
+    * 描述：修改UserAddress,根据地址的id修改一个地址,感觉查询数据库太多次了
     *
     */
     @GetMapping("/updateUserAddress")
@@ -177,6 +177,7 @@ public class UserAddressController {
     @PostMapping("/setDefaultAddress")
     @ResponseBody
     public ApiRestResponse setDefaultUserAddress(Long userId, String address)throws MallException{
+        /*   原来的代码我注释掉了，感觉逻辑不清楚是怎么回事，一句sql就写完的事。。
         QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
         wrapper.eq("status",4).eq("user_id",userId);
         List<UserAddress> list = userAddressService.list(wrapper);
@@ -196,13 +197,17 @@ public class UserAddressController {
         else {
             return ApiRestResponse.error(MallExceptionEnum.SET_DEFAULT_ADDRESS_FAILED);
         }
+        */
+      return userAddressService.setDefaultUserAddress(userId,address);
+
+
     }
 
 
 
 
     /**
-     * 描述:设置UserAddress为家
+     * 描述:设置UserAddress为家,这里感觉直接传的是地址名称，虽然我感觉可能传地址的id好些，毕竟地址名称也许会重复
      *
      */
     @PostMapping("/setHomeAddress")
@@ -217,7 +222,7 @@ public class UserAddressController {
 
 
     /**
-     * 描述:设置UserAddress为学校
+     * 描述:设置UserAddress为学校，这里同理我觉得传id好些
      *
      */
     @PostMapping("/setSchoolAddress")
@@ -232,7 +237,7 @@ public class UserAddressController {
 
 
     /**
-     * 描述:设置UserAddress为公司
+     * 描述:设置UserAddress为公司，这里同理我觉得传id好些
      *
      */
     @PostMapping("/setCompanyAddress")

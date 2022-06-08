@@ -16,5 +16,5 @@ import java.util.List;
  */
 @Repository
 public interface UserAddressMapper extends BaseMapper<UserAddress> {
-
+    Integer setDefaultUserAddress(Long userId,String address);
 }
