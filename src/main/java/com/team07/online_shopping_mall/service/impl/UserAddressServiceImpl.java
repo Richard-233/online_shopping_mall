@@ -39,8 +39,8 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     }
 
     @Override
-    public ApiRestResponse setDefaultUserAddress(Long userId, String address) {
-        if (userAddressMapper.setDefaultUserAddress(userId,address)>=1)
+    public ApiRestResponse setDefaultUserAddress(Long id,Long userId) {
+        if (userAddressMapper.setDefaultUserAddress(id,userId)>=1)
             return ApiRestResponse.success();
         else
             return ApiRestResponse.error(MallExceptionEnum.UPDATE_FAILED);

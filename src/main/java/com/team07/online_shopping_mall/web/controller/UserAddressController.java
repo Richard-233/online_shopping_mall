@@ -11,6 +11,7 @@ import com.team07.online_shopping_mall.mapper.UserAddressMapper;
 import com.team07.online_shopping_mall.model.domain.Shop;
 import com.team07.online_shopping_mall.model.domain.User;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import com.team07.online_shopping_mall.common.JsonResponse;
 import com.team07.online_shopping_mall.service.UserAddressService;
 import com.team07.online_shopping_mall.model.domain.UserAddress;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
@@ -176,7 +178,9 @@ public class UserAddressController {
      */
     @PostMapping("/setDefaultAddress")
     @ResponseBody
-    public ApiRestResponse setDefaultUserAddress(Long userId, String address)throws MallException{
+    @ApiOperation(value = "设置一个默认的地址",notes = "传入那个默认的地址的id，如果已有默认地址会替换掉")
+    public ApiRestResponse setDefaultUserAddress(Long id, HttpServletRequest request)throws MallException{
+    //public ApiRestResponse setDefaultUserAddress(Long userId, String address)throws MallException{
         /*   原来的代码我注释掉了，感觉逻辑不清楚是怎么回事，一句sql就写完的事。。
         QueryWrapper<UserAddress> wrapper = new QueryWrapper<>();
         wrapper.eq("status",4).eq("user_id",userId);
@@ -198,7 +202,7 @@ public class UserAddressController {
             return ApiRestResponse.error(MallExceptionEnum.SET_DEFAULT_ADDRESS_FAILED);
         }
         */
-      return userAddressService.setDefaultUserAddress(userId,address);
+      return userAddressService.setDefaultUserAddress(id,((User)request.getSession().getAttribute(Constant.MALL_USER)).getId());
 
 
     }

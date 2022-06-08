@@ -15,5 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface UserAddressService extends IService<UserAddress> {
     void updateAddress(UserAddress userAddress, String address);
     boolean setAddress(String address, int status);
-    ApiRestResponse setDefaultUserAddress(Long userId,String address);
+    ApiRestResponse setDefaultUserAddress(Long id,Long userId);
 }

@@ -37,7 +37,7 @@
     <update id="setDefaultUserAddress">
         UPDATE mall_user_address AS a,mall_user_address AS b
         SET a.`status`=4,b.`status`=IF(b.`status`=4,0,b.`status`)
-        WHERE a.receiver_address=#{address} AND a.user_id=#{userId} AND (b.receiver_address!=#{address} OR b.user_id!=#{userId});
+        WHERE a.id=#{id} AND b.id!=#{id} AND b.user_id=#{userId};
     </update>
 
 
